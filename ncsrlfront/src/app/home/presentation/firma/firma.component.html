@@ -1,0 +1,59 @@
+<div class="card shadow">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-12">
+            <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+                <div class="ui-grid-row mb-0">
+                    <div class="ui-grid-col-4"></div>
+                    <div class="ui-grid-col-4">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 px-1 pb-1">
+                                <img *ngIf="!mySrc" src="assets/images/default-logo.jpg" width="100%" class="border" />
+                                <img *ngIf="mySrc" [src]="mySrc" width="100%" class="border" />
+                            </div>
+                        </div>
+                        <div  *ngIf="editForm" class="ui-grid-row">
+                            <div class="ui-grid-col-12 px-1">
+                                <span class="ui-fileupload-choose ui-button-raised ui-button-icon ui-button-success" label="Seleccionar Imagen" icon="pi pi-upload" pButton>
+                                    <input type="file" accept=".png, .jpg, .jpeg" (change)="handleFiles($event)"/>
+                                </span>
+                                <div *ngIf="logo" class="ui-grid-row">
+                                    <div class="ui-grid-col-12 px-1">
+                                        <label> Nombre de Archivo:</label>
+                                    </div>
+                                </div>
+                                <div *ngIf="logo" class="ui-grid-row">
+                                    <div class="ui-grid-col-10 px-1">
+                                        <p><strong>{{logo.name }} </strong></p> 
+                                    </div>
+                                    <div class="ui-grid-col-2 px-1">
+                                        <button *ngIf="logo" pButton type="button" icon="pi pi-times" (click)="removeFile()" class="ui-button-danger"></button>   
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-grid-col-4"></div>
+                </div>
+                <p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showbar"></p-progressBar>
+                <div class="ui-grid-row mb-0">
+                    <div class="ui-grid-col-4"></div>
+                    <div class="ui-grid-col-4">
+                        <button type="button" pButton *ngIf="!editForm && showButton" icon="pi pi-pencil" label="Editar" class="ui-button-raised ui-button-icon ui-button-warning" (click)="editar()"></button>
+                    </div>
+                    <div class="ui-grid-col-4"></div>
+                </div>
+                <div class="ui-grid-row mb-0">
+                    <div class="ui-grid-col-2"></div>
+                    <div class="ui-grid-col-4">
+                        <button type="button" pButton *ngIf="editForm" icon="pi pi-save" label="Guardar" class="ui-button-raised ui-button-icon ui-button-primary" (click)="onSubmit()"></button>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <button type="button" pButton *ngIf="editForm" icon="pi pi-times" label="Cancelar" class="ui-button-raised ui-button-icon ui-button-danger" (click)="cancelar()"></button>
+                    </div>
+                    <div class="ui-grid-col-2"></div>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+</div>

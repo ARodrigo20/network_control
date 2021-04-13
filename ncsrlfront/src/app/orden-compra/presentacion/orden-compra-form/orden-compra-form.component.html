@@ -1,0 +1,300 @@
+<div class="card shadow">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+                <div class="ui-g-12">
+                    <p-panel header="Datos">
+                        <div class="ui-g ui-fluid ">
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <label>Fecha</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{ fecha | date: 'dd/MM/yyyy'}}"
+                                    placeholder="fecha"
+                                    readonly
+                                    class="readonly"
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <label>Usuario</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    [(ngModel)]="userName"
+                                    placeholder="Usuario"
+                                    readonly
+                                    class="readonly"
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <label>Terminos</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    [(ngModel)]="terminos"
+                                    placeholder="Terminos"
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <label>Proveedor</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{ (selectedProveedor) ? selectedProveedor.razsoc_prov : '' }}"
+                                    placeholder="Proveedor"
+                                    readonly
+                                    class="readonly"
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <label>Direccion de Proveedor</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{ dir_prov }}"
+                                    placeholder=""
+                                    readonly
+                                    class="readonly"
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <label>Contacto de proveedor</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{ contacto_prov }}"
+                                    placeholder=""
+                                    readonly
+                                    class="readonly"
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-8">
+                                <label>Medio de Entrega</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    [(ngModel)]="medio_entrega"
+                                    placeholder="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                                />
+                            </div>
+                        </div>
+                    </p-panel>
+                </div>
+                <div class="ui-g-12">
+                    <p-panel header="Producto">
+                        <div class="ui-g ui-fluid ">
+                            <div class="ui-g-12 ui-md-6 ui-lg-4 d-g-nopad">
+                                <label>Cantidad *</label>
+                                <input
+                                    type="number"
+                                    pInputText
+                                    [(ngModel)]="cantidad"
+                                    placeholder="cantidad"
+                                />
+                                <p-message severity="error" text="Campo requerido y mayor a 0"
+                                    *ngIf="submittedPS && !validCantidad">
+                                </p-message>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-8">
+                                <label>Descripcion *</label>
+                                <div class="ui-inputgroup">
+                                    <div class="ui-g-8 ui-md-9 ui-g-nopad">
+                                        <p-dropdown
+                                            [options]="productos"
+                                            [(ngModel)]="selectedProducto" 
+                                            optionLabel="des_prod"
+                                            placeholder="Seleccione"
+                                            showClear="true"
+                                            filter="true"
+                                        ></p-dropdown>
+                                        <p-message severity="error" text="Campo requerido"
+                                            *ngIf="submittedPS && !validProducto">
+                                        </p-message>
+                                    </div>
+                                    <div class="ui-g-4 ui-md-3 ui-g-nopad">
+                                        <button pButton type="button" label="Agregar" class="ui-button-raised ui-button-icon ui-button-success d-g-none mx-2" style="width: 100%"
+                                            icon="pi pi-check" (click)="addDetalle()">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </p-panel>
+                </div>
+                <div class="ui-g-12">
+                    <p-table [value]="ordenCompraDetalle" [responsive]="true" [scrollable]="true" [style]="{width:'100%'}">
+                        <ng-template pTemplate="caption">
+                            <div class="row justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-g-nopad mx-3">
+                                    Items *
+                                </div>  
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="colgroup" let-columns>
+                            <colgroup>
+                                <col style="width:90px">
+                                <col style="width:100px">
+                                <col style="width:120px">
+                                <col style="width:300px">
+                                <col style="width:60px">
+                                <col style="width:80px">
+                                <col style="width:110px">
+                                <col style="width:84px">
+                                <!-- <col style="width:164px">
+                                <col style="width:164px">
+                                <col style="width:100px">
+                                <col style="width:100px"> -->
+                                <col style="width:80px">
+                            </colgroup>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th >CODIGO NTWC</th>
+                                <th >N° PARTE</th>
+                                <th >FABRICANTE</th>
+                                <th >DESCRIPCION</th>
+                                <th >UND</th>
+                                <th >CANT.</th>
+                                <th >P.UNITARIO</th>
+                                <th >P.TOTAL</th>
+                                <!-- <th >ESTADO</th>
+                                <th >FEC. LLEGADA</th>
+                                <th >CANT. ENTRADA</th>
+                                <th >CANT. FALTANTE</th> -->
+                                <th >ACCION</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-detalle>
+                            <tr>
+                                <td>{{ detalle.cod_ntwc }}</td>
+                                <td>{{ detalle.ord_com_det_numpar }}</td>
+                                <td>{{ detalle.ord_com_det_fab }}</td>
+                                <td>{{ detalle.ord_com_det_des }}</td>
+                                <td>{{ detalle.ord_com_det_unimed }}</td>
+                                <td [ngClass]="{'rojo': detalle.ord_com_det_can <= 0 }">
+                                    <input pInputText type="number" [(ngModel)]="detalle.ord_com_det_can">
+                                </td>
+                                <td [ngClass]="{'rojo': detalle.ord_com_det_preuni <= 0 }">
+                                    <input pInputText type="number" [(ngModel)]="detalle.ord_com_det_preuni">
+                                </td>
+                                <td>
+                                    <span> {{ detalle.getTotal() | number : '1.2-2' }} </span>
+                                </td>
+                                <!-- <td>
+                                    <p-dropdown
+                                        [options]="estados" 
+                                        [(ngModel)]="detalle.estado_det" 
+                                        showClear="true" 
+                                        optionLabel="label"
+                                        placeholder="Estado"
+                                        [style]="{'width':'100%','min-width':'100%'}"
+                                        appendTo="body"
+                                    ></p-dropdown> 
+                                </td>
+                                <td>
+                                    <p-calendar 
+                                        [showIcon]="true"
+                                        showButtonBar="true"
+                                        [(ngModel)]="detalle.ord_com_det_feclleg"
+                                        dateFormat="dd/mm/yy"
+                                        [monthNavigator]="true" 
+                                        [yearNavigator]="true"
+                                        placeholder="dd/mm/yy"
+                                        yearRange="2000:{{year_now}}"
+                                        [readonlyInput]="true"
+                                        appendTo="body"
+                                    ></p-calendar>
+                                </td>
+                                <td>
+                                    <input pInputText type="number" [(ngModel)]="detalle.ord_com_det_canent">
+                                </td>
+                                <td>
+                                    <span> {{ detalle.getCanFaltante() | number : '1.2-2' }} </span>
+                                </td> -->
+                                <td class="text-center">
+                                    <button pButton type="button" class="ui-button-raised ui-button-icon ui-button-danger"
+                                        icon="pi pi-trash" (click)="deleteDetalle(detalle)">
+                                    </button>
+                                </td>                                
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="summary">
+                            <div class="ui-g ui-fluid justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-g-nopad mx-1 text-right">
+                                    Mostrando {{ordenCompraDetalle.length}} items
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-table>
+                    <p-message severity="error" text="Se requiere por lo menos un item"
+                        *ngIf="submitted && !validItems">
+                    </p-message>
+                </div>
+                                
+                <!-- INSERTANDO LADO DE DETALLE -->
+
+                <div class="ui-g-12">
+                    <div class="ui-g-12">
+                        <div class="ui-g ui-fluid row justify-content-center align-items-center">
+                            <div class="ui-g-12 ui-lg-2 ui-lg-offset-8 ui-md-offset-4 text-right">
+                                <label >BASE IMPONIBLE</label>
+                            </div>
+                            <div class="ui-g-12 ui-lg-2 text-right">
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{baseImponible | number : '1.2-2' }}"                                    
+                                    placeholder="0.000"
+                                    class="text-right readonly-det"
+                                    readonly
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-lg-2 ui-lg-offset-8 ui-md-offset-4 text-right">
+                                <label>18% I.G.V.</label>
+                            </div>
+                            <div class="ui-g-12 ui-lg-2 text-right">
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{igv | number : '1.2-2' }}"                                    
+                                    placeholder="0.000"
+                                    class="text-right readonly-det"
+                                    readonly
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-lg-2 ui-lg-offset-8 ui-md-offset-4 text-right">
+                                <label>TOTAL</label>
+                            </div>
+                            <div class="ui-g-12 ui-lg-2 text-right">
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{total | number : '1.2-2' }}"                                    
+                                    placeholder="0.000"
+                                    class="text-right readonly-det"
+                                    readonly
+                                />
+                            </div>
+                        </div>
+                    </div>        
+                </div>
+                <div class="ui-g-12" *ngIf="showbar">
+                    <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+                </div>
+                <!-- FIN DE LA MODIFICACION -->
+                <div class="ui-g-12 ui-g-nopad">
+                    <div class="ui-g-12 ui-md-4 ui-lg-8"></div>
+                    <div class="ui-g-12 ui-md-4 ui-lg-2">
+                        <button type="button" pButton icon="pi pi-save" (click)="submit()" label="Guardar"
+                        class="ui-button-primary"></button>
+                    </div>
+                    <div class="ui-g-12 ui-md-4 ui-lg-2">
+                        <button type="button" pButton icon="pi pi-times" (click)="cancel()" label="Cancelar"
+                        class="ui-button-danger"></button>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>    
+</div>

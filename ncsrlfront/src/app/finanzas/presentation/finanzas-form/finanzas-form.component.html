@@ -1,0 +1,327 @@
+
+<div class="card shadow">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+                <div class="ui-g-12">
+                    <p-panel header="Nuevo Registro">
+                        <div class="ui-g ui-fluid" >
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                    <label>Fecha:</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-8">
+                                    <p-calendar
+                                        id="fec"
+                                        [showIcon]="true"
+                                        showButtonBar="true"
+                                        [(ngModel)]="gas_fec"
+                                        dateFormat="dd/mm/yy"
+                                        [monthNavigator]="true"
+                                        placeholder="dd/mm/yy"
+                                        [readonlyInput]="true"
+                                        appendTo="body"
+                                        required="true"
+                                    ></p-calendar>
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                    <label>Proyecto:</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-8">
+                                    <p-dropdown
+                                        id="drpProy"
+                                        [options]="proyectos"
+                                        [(ngModel)]="selectedProyecto"
+                                        optionLabel="nom_proy"
+                                        placeholder="Seleccione"
+                                        showClear="true"
+                                        filter="true"
+                                    ></p-dropdown>
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                    <label>Proveedor:</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-7">
+                                    <p-dropdown
+                                        id="drpProv"
+                                        [options]="proveedores"
+                                        [(ngModel)]="selectedProveedor"
+                                        optionLabel="razsoc_prov"
+                                        placeholder="Seleccione"
+                                        showClear="true"
+                                        filter="true"
+                                    ></p-dropdown>
+                                    <p-message severity="error" text="Seleccione" *ngIf="submitted && !validProveedor"></p-message>
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-1">
+                                    <div><button id="newProv" pButton type="button" class="ui-button-raised ui-button-success" icon="pi pi-plus" (click)="newProveedor()"></button></div>
+                                </div>
+                                
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                    <label>RUC:</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-8" *ngIf="!selectedProveedor">
+                                    <input
+                                        type="text"
+                                        pInputText
+                                        value="Seleccione un Proveedor"
+                                        pKeyFilter="int"
+                                        readonly
+                                    />
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-8" *ngIf="selectedProveedor">
+                                    <input
+                                        type="text"
+                                        pInputText
+                                        [(ngModel)]="selectedProveedor.num_doc_prov"
+                                        pKeyFilter="int"
+                                        readonly
+                                    />
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                    <label>Descripción:</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-8">
+                                    <input
+                                        id="desc"
+                                        type="text"
+                                        pInputText
+                                        [(ngModel)]="gas_desc"
+                                        placeholder="Descripción"
+                                    />
+                                    <p-message severity="error" text="Complete el campo" *ngIf="submitted && !validDescripcion"></p-message>
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                    
+                                        <label>Factura:</label>
+                                    
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                    <input
+                                        id="serFac"
+                                        type="text"
+                                        pInputText
+                                        [(ngModel)]="serie"
+                                        pKeyFilter="alphanum"
+                                        maxlength = "4"
+                                        placeholder = "AB01"
+                                        onkeyup = "javascript:this.value=this.value.toUpperCase();"
+                                    />
+                                    <!-- <p-message severity="error" text="Complete el campo" *ngIf="validSerieFac"></p-message> -->
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                    <input
+                                        id="corrFac"
+                                        type="text"
+                                        pInputText
+                                        [(ngModel)]="correl"
+                                        placeholder="99999999"
+                                        pKeyFilter="int"
+                                        maxlength = "8"
+                                    />
+                                    <p-message severity="error" text="Complete el documento" *ngIf="submitted && !validCorrelativo">
+                                    </p-message>
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                    <label>Moneda:</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                    <p-dropdown
+                                        id="drpMon"
+                                        [options]="monedas"
+                                        [(ngModel)]="selectedMoneda"
+                                        optionLabel="label"
+                                        placeholder="Seleccione"
+                                        showClear="true"
+                                        (onChange) = "onChangeMoneda()"
+                                    ></p-dropdown>
+                                    <p-message severity="error" text="Seleccione" *ngIf="submitted && !selectedMoneda"></p-message>
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-2"></div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                    <label>Total Costo:</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                    <div class="ui-inputgroup">
+                                        <span class="ui-inputgroup-addon" *ngIf="selectedMoneda"> {{ (selectedMoneda.value === 1) ? 'S/' : '$' }}</span>
+                                        <input
+                                            id="ingr"
+                                            pInputText
+                                            type="text" 
+                                            [(ngModel)]="ingreso"
+                                            placeholder="999.99"
+                                        />
+                                    </div>
+                                    <p-message severity="error" text="valor inválido" *ngIf="submitted && !validIngreso"></p-message>
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-2"></div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-4" *ngIf="tipoCambio">
+                                    <label>Tipo de cambio:</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-6" *ngIf="tipoCambio">
+                                    <div class="ui-inputgroup">
+                                        <span class="ui-inputgroup-addon">S/</span>
+                                        <input
+                                            id="tipCam"
+                                            pInputText
+                                            type="text"
+                                            [(ngModel)]="gas_tipcam"
+                                            placeholder="999.99"
+                                        />
+                                    </div>
+                                    <p-message severity="error" text="valor inválido" *ngIf="submitted && !validTipCam"></p-message>
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                    <label>Sub Total:</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                    <div class="ui-inputgroup">
+                                        <span class="ui-inputgroup-addon">S/</span>
+                                        <input
+                                            pInputText
+                                            type="text"
+                                            value="{{subTotal | number : '1.2-2' }}"
+                                            readonly
+                                        />
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-2"></div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                    <label>IGV:</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                    <div class="ui-inputgroup">
+                                        <span class="ui-inputgroup-addon">S/</span>
+                                        <input
+                                            pInputText
+                                            type="text"
+                                            value="{{igv | number : '1.2-2' }}"
+                                            readonly
+                                        />
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-2"></div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                    <label>TOTAL:</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                    <div class="ui-inputgroup">
+                                        <span class="ui-inputgroup-addon">S/</span>
+                                        <input
+                                            pInputText
+                                            type="text"
+                                            value="{{total | number : '1.2-2' }}"
+                                            readonly
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </p-panel>
+                </div>
+                <div class="ui-g-12" *ngIf="showbar">
+                    <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+                </div>
+                <div class="ui-g-12 ui-g-nopad">
+                    <div class="ui-g-12 ui-md-4 ui-lg-8"></div>
+                    <div class="ui-g-12 ui-md-4 ui-lg-2">
+                        <button id="submit" type="button" pButton icon="pi pi-check-square" (click)="submit()" label="Registrar Ingreso"
+                        class="ui-button-primary"></button>
+                    </div>
+                    <div class="ui-g-12 ui-md-4 ui-lg-2">
+                        <button id="cancel" type="button" pButton icon="pi pi-times" (click)="cancel()" label="Cancelar"
+                        class="ui-button-danger"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-dialog [header]="titlePanelProveedor" [(visible)]="displayModalProveedor" [modal]="true"
+	[style]="{minWidth: '60%', minHeight: '150px', 'max-height': '90vh'}"
+	[contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '60vh','min-height':'300px'}"
+	[baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelProv()">
+	<!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <p>Razón Social: *</p>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-8">
+                <input id="newRazsoc" pInputText type="text" [(ngModel)]="razsoc_prov" placeholder="Requerido" class="ng-dirty ng-invalid"
+                pattern="[a-zA-Z0-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{2,200}"/>
+                <p-message severity="error" text="Razón social es requerido"
+                    *ngIf="submittedProv && !validRazSoc">
+                </p-message>
+            </div>
+            <div class="ui-grid-col-2">
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <label for="id_tipdoc">Tipo de Documento: *</label>
+                <p-dropdown
+                    id="tipdoc"
+                    [options]="tipdoc"
+                    [(ngModel)]="selectedTipdoc" 
+                    filter="true"
+                    optionLabel="des_tipdoc"
+                    placeholder="Seleccione"
+                    showClear="true"
+                ></p-dropdown>
+                <p-message severity="error" text="Seleccione"
+                    *ngIf="submittedProv && !validTipDoc">
+                </p-message>
+            </div>
+            <div class="ui-grid-col-4">
+                <label for="num_doc_prov">Número de Documento: *</label>
+                <input id="newDoc" pInputText type="text" pKeyFilter="int" [(ngModel)]="num_doc_prov" placeholder="Requerido" pattern="[0-9]{0,11}"/>
+                <p-message severity="error" text="Documento es requerido"
+                    *ngIf="submittedProv && !validNumDoc">
+                </p-message>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <p>Email:</p>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-8">
+                <input id="newEmail" pInputText type="text" [(ngModel)]="ema_prov" placeholder="ejemplo@ejemplo.com" [pKeyFilter]="blockSpace"
+                pattern="[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]{2,85}@[A-Za-z0-9]{2,10}(?:\.[a-zA-Z0-9-.]{1,5})"/>
+            </div>
+        </div>
+    </div>
+	<!--End Body-->
+	<p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showbar"></p-progressBar>
+	<p-footer>
+		
+		<button id="submitProv" type="button" pButton icon="pi pi-save" (click)="submitProv()" label="Guardar"
+			class="ui-button-primary"></button>
+		<button id="cancelProv" type="button" pButton icon="pi pi-times" (click)="cancelProv()" label="Cancelar"
+			class="ui-button-danger"></button>
+	</p-footer>
+</p-dialog>

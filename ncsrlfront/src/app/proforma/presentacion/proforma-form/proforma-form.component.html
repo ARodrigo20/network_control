@@ -1,0 +1,895 @@
+<div class="card shadow">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+                <div class="ui-g-12">
+                    <p-panel header="Datos">
+                        <div class="ui-g ui-fluid ">
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <label>Fecha</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{ fecha | date: 'dd/MM/yyyy'}}"
+                                    placeholder="fecha"
+                                    readonly
+                                    class="readonly"
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <label>Usuario</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    [(ngModel)]="userName"
+                                    placeholder="Usuario"
+                                    readonly
+                                    class="readonly"
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <label>Cliente *</label>
+                                <input *ngIf="_readonly"
+                                    type="text"
+                                    pInputText
+                                    value="{{ (selectedCliente) ? selectedCliente.razsoc_cli : '' }}"
+                                    readonly
+                                    class="readonly"
+                                />
+                                <p-dropdown *ngIf="!_readonly"
+                                    [options]="clientes"
+                                    [(ngModel)]="selectedCliente" 
+                                    optionLabel="razsoc_cli"
+                                    placeholder="Seleccione"
+                                    showClear="true"
+                                    filter="true"
+                                    (onChange)="onChangeCliente($event)"
+                                ></p-dropdown>
+                                <p-message severity="error" text="Cliente requerido"
+                                    *ngIf="submitted && !validCliente">
+                                </p-message>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-8">
+                                <label>Direccion</label>
+                                <input *ngIf="_readonly"
+                                    type="text"
+                                    pInputText
+                                    value="{{ (selectedDireccion) ? selectedDireccion.dir_cli : '' }}"
+                                    readonly
+                                    class="readonly"
+                                />
+                                <div class="ui-inputgroup" *ngIf="!_readonly">
+                                    <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                                        <p-dropdown
+                                            [options]="direcciones"
+                                            [(ngModel)]="selectedDireccion" 
+                                            optionLabel="dir_cli"
+                                            placeholder="{{ (selectedCliente) ? 'Seleccione' : 'Depende de Cliente' }}"
+                                            showClear="true"
+                                        ></p-dropdown>
+                                    </div>
+                                    <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                                        <button pButton type="button" label="nuevo" class="ui-button-raised ui-button-icon ui-button-success d-g-none" style="width: 100%"
+                                            icon="pi pi-plus" (click)="nuevaDireccion()">
+                                        </button>
+                                    </div>
+                                </div>                                
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <label>Contacto</label>
+                                <input *ngIf="_readonly"
+                                    type="text"
+                                    pInputText
+                                    value="{{ (selectedContacto) ? selectedContacto.nom_cli_con : '' }}"
+                                    readonly
+                                    class="readonly"
+                                />
+                                <div class="ui-inputgroup" *ngIf="!_readonly">
+                                    <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                                        <p-dropdown
+                                            [options]="contactos"
+                                            [(ngModel)]="selectedContacto" 
+                                            optionLabel="nom_cli_con"
+                                            placeholder="{{ (selectedCliente) ? 'Seleccione' : 'Depende de Cliente' }}"
+                                            showClear="true"
+                                        ></p-dropdown>
+                                    </div>
+                                    <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                                        <button pButton type="button" label="nuevo" class="ui-button-raised ui-button-icon ui-button-success d-g-none" style="width: 100%"
+                                            icon="pi pi-plus" (click)="nuevoContacto()">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-8">
+                                <label>Proyecto</label>
+                                <input *ngIf="_readonly"
+                                    type="text"
+                                    pInputText
+                                    value="{{ (selectedProyecto) ? selectedProyecto.nom_proy : '' }}"
+                                    readonly
+                                    class="readonly"
+                                />
+                                <p-dropdown *ngIf="!_readonly"
+                                    [options]="proyectos"
+                                    [(ngModel)]="selectedProyecto" 
+                                    optionLabel="nom_proy"
+                                    placeholder="Seleccione"
+                                    showClear="true"
+                                    filter="true"
+                                ></p-dropdown>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <label>Ciudad</label>
+                                <input *ngIf="_readonly"
+                                    type="text"
+                                    pInputText
+                                    value="{{ (selectedDireccion) ? selectedDireccion.ciu_cli : '' }}"
+                                    readonly
+                                    class="readonly"
+                                />                                
+                                <p-dropdown *ngIf="!_readonly"
+                                    [options]="direcciones"
+                                    [(ngModel)]="selectedDireccion" 
+                                    optionLabel="ciu_cli"
+                                    placeholder="{{ (selectedCliente) ? 'Seleccione' : 'Depende de Cliente' }}"
+                                    showClear="true"
+                                ></p-dropdown>               
+                            </div>
+                            
+
+                            
+                            <!--MONEDA-->
+
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <label>Moneda</label>
+                                <p-dropdown                                   
+                                    showClear="true"
+                                    filter="true"
+                                    [options]="moneda"
+                                    [(ngModel)]="selecMoneda"
+                                    placeholder="Seleccione"
+                                    optionLabel="label"                                    
+                                ></p-dropdown>
+                            </div>
+
+                           <!-- <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <label>Credito</label>
+                                <p-dropdown                                    
+                                    [options]="credito"    
+                                    placeholder="Seleccione"
+                                    showClear="true"
+                                    filter="true"
+                                    [(ngModel)]="selecCredito"
+                                    optionLabel="label"
+                                ></p-dropdown>
+                                <div style="width: 20rem">30 dias presentada la proforma.</div>                                
+                            </div> -->
+                            
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <label>Condicion de pago</label>
+                                <input
+                                    type="text"
+                                    pInputText  
+                                    [(ngModel)]="condicionPago"                                  
+                                    placeholder=""
+                                                                     
+                                />
+                            </div>
+
+                            <div class="ui-g-12 ui-md-6 ui-lg-2 d-g-none">
+                                <label>Importe Inicial </label>
+                                <input
+                                    type="number"
+                                    pInputText
+                                    [(ngModel)]="importeInicial"
+                                    placeholder="importeInicial"
+                                />
+                                <p-message severity="error" text="Mayor o igual a 0"
+                                    *ngIf="!validImporteIni">
+                                </p-message>
+                            </div>
+                            
+                            <div class="ui-g-12 ui-md-6 ui-lg-2 d-g-none">
+                                <label>Interes </label>
+                                <input
+                                    type="number"
+                                    pInputText
+                                    [(ngModel)]="interes"
+                                    placeholder="interes"
+                                />
+                                <p-message severity="error" text="Mayor o igual a 0"
+                                    *ngIf="!validInteres">
+                                </p-message>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-6 ui-lg-2 d-g-none">
+                                <label>Cuotas </label>
+                                <input
+                                    type="number"
+                                    pInputText
+                                    [(ngModel)]="cuota"
+                                    placeholder="cuota"
+                                />
+                                <p-message severity="error" text="Mayor o igual a 0"
+                                    *ngIf="!validCuota">
+                                </p-message>
+                            </div>
+
+                            <!-- FIN DE LA MODIFICACION -->
+                            <!-- <div class="ui-g-12 ui-md-6 ui-lg-4" >
+                                <label>Añada nuevo Seccion </label>
+                                <div class="ui-inputgroup">                                   
+                                    <div class="ui-g-8 ui-md-8 ui-g-nopad">
+                                        <p-dropdown
+                                            [options]="seccion"
+                                            [(ngModel)]="selectedSeccion" 
+                                            optionLabel="des_sec"
+                                            placeholder="Seleccione"
+                                            showClear="true"
+                                            filter="true"
+                                        >
+                                        <ng-template let-item pTemplate="selectedItem">
+                                            {{item.value.des_sec.substring(0,30)}}
+                                        </ng-template>
+                                        </p-dropdown>
+                                        
+                                    </div>
+                                    
+                                    <div class="ui-g-4 ui-md-4 ui-g-nopad">
+                                        <button pButton type="button" label="nuevo" class="ui-button-raised ui-button-icon ui-button-success d-g-none" style="width: 100%"
+                                            icon="pi pi-plus" (click)="nuevaSeccion()">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div> -->
+
+                        </div>
+                    </p-panel>
+                </div>
+                <div class="ui-g-12">
+                    <p-panel header="Producto/Servicio/GastosIndirectos">
+                        <div class="ui-g ui-fluid ">
+
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <label>Tipo</label>
+                                <p-dropdown
+                                    [options]="tiposDetalle"
+                                    [(ngModel)]="selectedTipoDetalle" 
+                                    optionLabel="label"
+                                    placeholder="Seleccione"
+                                ></p-dropdown>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-6 ui-lg-8" *ngIf="selectedTipoDetalle && (selectedTipoDetalle.value === 1)">
+                                <label>Descripcion *</label>
+                                <p-dropdown
+                                    [options]="productos"
+                                    [(ngModel)]="selectedProducto" 
+                                    optionLabel="des_prod"
+                                    placeholder="Seleccione"
+                                    showClear="true"
+                                    filter="true"
+                                ></p-dropdown>
+                                <p-message severity="error" text="Campo requerido"
+                                    *ngIf="submittedPS && !validProducto">
+                                </p-message>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-4 d-g-none" *ngIf="selectedTipoDetalle && (selectedTipoDetalle.value === 1)">
+                                <label>Cantidad *</label>
+                                <input
+                                    type="number"
+                                    pInputText
+                                    [(ngModel)]="cantidad"
+                                    placeholder="cantidad"
+                                />
+                                <p-message severity="error" text="Campo requerido y mayor a 0"
+                                    *ngIf="submittedPS && !validCantidad">
+                                </p-message>
+                            </div>                          
+
+                            <div class="ui-g-12 ui-md-6 ui-lg-4 d-g-none" *ngIf="selectedTipoDetalle && (selectedTipoDetalle.value === 1)">                                
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-8" *ngIf="selectedTipoDetalle && (selectedTipoDetalle.value === 2)">
+                                <label>Descripcion *</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    [(ngModel)]="servicio"
+                                    placeholder="Descripcion"
+                                />
+                                <p-message severity="error" text="Campo requerido"
+                                    *ngIf="submittedPS && !validServicio">
+                                </p-message>
+                            </div>
+                                                   
+                            <div class="ui-g-12 ui-md-6 ui-lg-8" *ngIf="selectedTipoDetalle && (selectedTipoDetalle.value === 3)">
+                                <label>Descripcion *</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    [(ngModel)]="servicio"
+                                    placeholder="Descripcion"
+                                />
+                                <p-message severity="error" text="Campo requerido"
+                                    *ngIf="submittedPS && !validServicio">
+                                </p-message>
+                            </div>
+                         
+                            <div class="ui-g-12 ui-md-6 ui-lg-4 d-g-none" *ngIf="selectedTipoDetalle && (selectedTipoDetalle.value === 2)"></div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-4 d-g-none" *ngIf="selectedTipoDetalle && (selectedTipoDetalle.value === 2)"></div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-offset-10 ui-lg-2">
+                                <label  style="color: #00000000;" *ngIf="selectedTipoDetalle && (selectedTipoDetalle.value === 1)">Agregar</label>
+                                <button pButton type="button" label="Agregar" class="ui-button-raised ui-button-icon ui-button-success d-g-none"
+                                    icon="pi pi-check" (click)="addDetalle()">
+                                </button>
+                            </div>
+                        </div>
+                    </p-panel>
+                </div>
+                <div class="ui-g-12">
+                    <p-table [value]="proformasDetalle" dataKey="id_prof_det"
+                    [responsive]="true" [scrollable]="true" [style]="{width:'100%'}" >
+                        <ng-template pTemplate="caption">
+                            <div class="row justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-g-nopad mx-3">
+                                    Items *
+                                </div>  
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="colgroup" let-columns>
+                            <colgroup>
+                                <col style="width:100px">
+                                <col style="width:250px">
+                                <col style="width:120px">
+                                <col style="width:120px">
+                                <col style="width:300px">
+                                <col style="width:100px">
+                                <col style="width:100px">
+                                <col style="width:100px">
+                                <col style="width:100px">
+                                <col style="width:100px">
+                                <col style="width:100px">
+                                <col style="width:120px">
+                                <col style="width:100px">
+                                <col style="width:250px">
+                                <col style="width:250px">                                
+                                <col style="width:100px">
+                                <col style="width:130px">                                
+                                <col style="width:100px">
+                            </colgroup>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th >Tipo</th>
+                                <th>
+                                    <div class="ui-g ui-fluid align-items-center">
+                                        <div class="ui-g-10 ui-g-nopad">
+                                            Seccion
+                                        </div>
+                                        <div class="ui-g-2 ui-g-nopad text-right">
+                                            <button pButton type="button" class="ui-button-raised ui-button-icon ui-button-primary d-g-none" style="width: 100%"
+                                                icon="pi pi-plus" (click)="nuevaSeccion()">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </th>
+                                <!-- <th >
+                                    Seccion <button pButton type="button" label="nuevo" class="ui-button-raised ui-button-icon ui-button-success d-g-none" style="width: 100%"
+                                    icon="pi pi-plus" (click)="nuevaSeccion()">
+                                </button></th> -->
+                                <th >Marca</th>
+                                <th >N° Parte</th>
+                                <th >Descripcion</th>
+                                <th >UnidadM</th>
+                                <th >Cantidad</th>
+                                <th >Costo</th>
+                                <th >TCosto</th>
+                                <th >%</th>
+                                <th >Comision</th>
+                                <th >PrecioLista</th>
+                                <th >Importe</th> 
+                                <th >Proveedor</th>
+                                <th >DirProveedor</th>                               
+                                <th >Stock</th>
+                                <th >Estado</th>                                
+                                <th >Accion</th>
+                                
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-detalle>
+                            <tr *ngIf="detalle.est_reg !== 'E'">
+                                <td>
+                                    {{ (detalle.prof_prod_serv === 1) ? 'Producto' : '' }}
+                                    {{ (detalle.prof_prod_serv === 2) ? 'Servicio' : '' }}
+                                    
+                                </td>
+                                <td>
+                                    <p-dropdown 
+                                        [options]="seccion" 
+                                        [(ngModel)]="detalle.seccion" 
+                                        showClear="true" 
+                                        optionLabel="des_sec" 
+                                        [style]="{'width':'100%'}"
+                                        placeholder="Seleccione"
+                                        filter="true"
+                                        appendTo="body"                                        
+                                    >
+                                    <ng-template let-item pTemplate="selectedItem">
+                                        {{item.value.des_sec.substring(0,22)}}
+                                    </ng-template>
+                                    </p-dropdown>
+                                </td>
+
+                                
+                                
+                               <!-- <td>
+                                    <span > {{ detalle.sec_des }} </span> 
+                                </td> -->
+                                <td>
+                                    <span *ngIf="detalle.prof_prod_serv === 1"> {{ detalle.marca }} </span>
+                                    <span *ngIf="detalle.prof_prod_serv !== 1"> {{ 'NTWC' }} </span>
+                                </td>
+                                <td>
+                                    <span *ngIf="detalle.prof_prod_serv === 1"> {{ detalle.num_parte }} </span>
+                                </td>
+                                <td >{{ detalle.prof_des_prod }}</td>
+                                <td>
+                                    <span *ngIf="detalle.prof_prod_serv === 1"> {{ detalle.unidad_medida }} </span>
+                                </td>
+                                <td [ngClass]="{'rojo': (detalle.prof_prod_serv === 1 && !detalle.cantidad_valida)}">
+                                    
+                                     <p *ngIf="!detalle.cantidad_valida"> No valido </p>
+                                     <input *ngIf="detalle.prof_prod_serv === 1" pInputText type="number" [(ngModel)]="detalle.prof_det_can">
+                                     <span *ngIf="detalle.prof_prod_serv !== 1"> {{ detalle.prof_det_can }} </span>
+                                    <!-- <input pInputText type="number" [(ngModel)]="detalle.prof_det_can"> -->
+                                </td>                               
+                                <td>                                   
+                                   <!--  <input *ngIf="detalle.prof_prod_serv === 1" pInputText type="number" [(ngModel)]="detalle.prof_det_cos"> -->
+                                     <input pInputText type="number" [(ngModel)]="detalle.prof_det_cos"> 
+                                </td>
+                                <td>
+                                    <span > {{ detalle.getTCosto() | number : '1.2-2' }} </span>
+                                    
+                                   <!-- <span *ngIf="detalle.prof_prod_serv === 1"> {{ detalle.getTCosto() | number : '1.2-2' }} </span> -->
+                                   <!-- <span> {{ detalle.getTCosto() | number : '1.2-2' }} </span> -->
+                                </td>
+                                <td>
+                                   <!-- <input *ngIf="detalle.prof_prod_serv === 1" pInputText type="number" [(ngModel)]="detalle.com_porcentaje"> -->
+                                    <input pInputText type="number" [(ngModel)]="detalle.prof_det_por_com">
+                                </td>
+                                <td>
+                                    <span> {{ detalle.getComision() | number : '1.2-2' }} </span>
+                                </td>
+                                <td>
+                                    <span> {{ detalle.getPrecioLista() | number : '1.2-2' }} </span>
+                                </td>
+                                <td>
+                                    <span> {{ detalle.getImporte() | number : '1.2-2' }} </span>
+                                </td>
+                                <td>
+                                    <p-dropdown *ngIf="detalle.prof_prod_serv === 1" 
+                                        [options]="proveedores" 
+                                        [(ngModel)]="detalle.proveedor" 
+                                        showClear="true" 
+                                        optionLabel="razsoc_prov" 
+                                        [style]="{'width':'100%'}"
+                                        placeholder="Seleccione"
+                                        filter="true"
+                                        appendTo="body"
+                                        (onChange)="detalle.onChangeProveedor($event)"
+                                    >
+                                    <ng-template let-item pTemplate="selectedItem">
+                                        {{item.value.razsoc_prov.substring(0,22)}}
+                                    </ng-template>
+                                    </p-dropdown>
+                                </td>
+                                <td>
+                                    <p-dropdown *ngIf="detalle.prof_prod_serv === 1" 
+                                        [options]="detalle.direcciones" 
+                                        [(ngModel)]="detalle.selectedDirecc" 
+                                        showClear="true" 
+                                        optionLabel="dir_prov" 
+                                        [style]="{'width':'100%'}"
+                                        placeholder="Seleccione"
+                                        filter="true"                                        
+                                        appendTo="body"
+                                    >
+                                    <ng-template let-item pTemplate="selectedItem">
+                                        {{item.value.dir_prov.substring(0,22)}}
+                                    </ng-template>
+                                    </p-dropdown>
+                                </td>
+                                <td >                                    
+                                    <span *ngIf="detalle.prof_prod_serv === 1"> {{ detalle.prof_can_prod}} </span>
+                                </td>
+
+                                <td [ngClass]="{'rojo': (detalle.prof_prod_serv === 1 && detalle.prof_can_prod <= detalle.prof_det_can || detalle.prof_det_can < 0), 'verde': (detalle.prof_prod_serv === 1 && detalle.prof_can_prod > detalle.prof_det_can && detalle.prof_det_can >= 0)}">
+                                    
+                                        <span *ngIf="detalle.prof_prod_serv === 1"> {{ (detalle.mensajeStock===true && detalle.prof_can_prod <= detalle.prof_det_can || detalle.prof_det_can < 0) ? 'No stock'  : 'Stock'}} </span>
+                                        <input *ngIf="detalle.prof_prod_serv === 1 && detalle.prof_can_prod <= detalle.prof_det_can || detalle.prof_det_can < 0"  pInputText type="text" [(ngModel)]="detalle.prof_det_stock">
+                                </td>
+                                
+                                <td class="text-center">
+                                    <button pButton type="button" class="ui-button-raised ui-button-icon ui-button-danger"
+                                        icon="pi pi-trash" (click)="deleteDetalle(detalle)">
+                                    </button>
+                                </td>                                
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="summary">
+                            <div class="ui-g ui-fluid justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-g-nopad mx-1 text-right">
+                                    Mostrando {{proformasDetalle.length}} items
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-table>
+                    <p-message severity="error" text="Se requiere por lo menos un item"
+                        *ngIf="submitted && !validItems">
+                    </p-message>
+                </div>
+                                
+                <!-- INSERTANDO LADO DE DETALLE -->
+
+                <div class="ui-g-12">
+                    <p-panel header="Detalle">                        
+                        <div class="ui-g ui-fluid ">
+
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Validez de proforma (dias) </label>
+                                <input
+                                    type="text"
+                                    pInputText  
+                                    [(ngModel)]="validezProforma"                                  
+                                    placeholder=""
+                                                                     
+                                />
+                            </div>
+
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Tiempo de Instalacion (dias) </label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    [(ngModel)]="tiempoInstalacion"                                   
+                                    placeholder=""                                    
+                                />
+                            </div>
+
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Tiempo de Entrega (dias) </label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    [(ngModel)]="tiempoEntrega"                                   
+                                    placeholder=""                                    
+                                />
+                            </div>
+
+                            <div class="ui-g-12 ui-md-6 ui-lg-2 d-g-none">
+                                <label>Factor </label>
+                                <input
+                                    type="number"
+                                    pInputText
+                                    value="{{factor | number : '1.2-2'}}"                                    
+                                    placeholder="000"
+                                    readonly
+                                    class="readonly-det"
+                                />
+                                <p-message severity="error" text="Campo requerido y mayor a 0"
+                                    *ngIf="submittedPS && !validFactor">
+                                </p-message>
+                            </div>
+                            
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Financiacion</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{financiacion | number : '1.2-2'}}"                                    
+                                    placeholder="0.000"
+                                    readonly
+                                    class="readonly-det"
+                                />
+                            </div>
+
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Valor Cuota</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{valorCuota | number : '1.2-2'}}"                                    
+                                    placeholder="0.000"
+                                    readonly
+                                    class="readonly-det"
+                                />
+                            </div>
+                            
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Costo directo</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{costoDirecto | number : '1.2-2'}}"                                    
+                                    placeholder="0.000"
+                                    readonly
+                                    class="readonly-det"
+                                />
+                            </div>
+
+                         <!--   <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Gasto indirecto</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{gastosIndirectos | number : '1.2-2' }}"
+                                    placeholder="0.000"
+                                    readonly
+                                />
+                            </div> -->                                                     
+
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>% Utilidad </label>
+                                <input
+                                    type="number"
+                                    pInputText
+                                    [(ngModel)]="porcentajeUtilidad"
+                                    placeholder="0.00"
+                                />
+                                <p-message severity="error" text="Mayor o igual a 0"
+                                    *ngIf="!validPorcentajeUti">
+                                </p-message>
+                            </div>
+                                                        
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Utilidad total</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{utilidad | number : '1.2-2' }}"                                    
+                                    placeholder="0.000"
+                                    readonly
+                                    class="readonly-det"
+                                />
+                            </div>
+
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>% Descuento </label>
+                                <input
+                                    type="number"
+                                    pInputText
+                                    [(ngModel)]="porcentajeDescuento"
+                                    placeholder="0.00"
+                                />
+                                <p-message severity="error" text="Mayor o igual a 0"
+                                    *ngIf="!validPorcentajeDes">
+                                </p-message>
+                            </div>                                                        
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Descuento total</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{descuentoTotal | number : '1.2-2' }}"                                    
+                                    placeholder="0.000"
+                                    readonly
+                                    class="readonly-det"
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Costo Especial</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{costoEspecial | number : '1.2-2' }}"                                    
+                                    placeholder="0.000"
+                                    readonly
+                                    class="readonly-det"
+                                />
+                            </div>
+
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Base imponible</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{baseImponible | number : '1.2-2' }}"                                    
+                                    placeholder="0.000"
+                                    readonly
+                                    class="readonly-det"
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>IGV</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{igv | number : '1.2-2' }}"                                    
+                                    placeholder="0.000"
+                                    readonly
+                                    class="readonly-det"
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Neto pagar</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{netoPagar | number : '1.2-2' }}"                                    
+                                    placeholder="0.000"
+                                    readonly
+                                    class="readonly-det"
+                                />
+                            </div>
+
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <label>Observaciones</label>
+                                <textarea rows="1" pInputTextarea [(ngModel)]="observaciones" autoResize="autoResize" placeholder="Sin Observaciones"></textarea>
+                            </div>
+
+                            
+
+                            <!-- FIN DE LA MODIFICACION -->
+
+                        </div>
+                    </p-panel>
+                </div>
+                <div class="ui-g-12" *ngIf="showbar">
+                    <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+                </div>
+                <!-- FIN DE LA MODIFICACION -->
+                <div class="ui-g-12 ui-g-nopad">
+                    <div class="ui-g-12 ui-md-4 ui-lg-8"></div>
+                    <div class="ui-g-12 ui-md-4 ui-lg-2">
+                        <button type="button" pButton icon="pi pi-save" (click)="submit()" label="Guardar"
+                        class="ui-button-primary"></button>
+                    </div>
+                    <div class="ui-g-12 ui-md-4 ui-lg-2">
+                        <button type="button" pButton icon="pi pi-times" (click)="cancel()" label="Cancelar"
+                        class="ui-button-danger"></button>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-dialog header="Registrar Direccion" [(visible)]="displayModalDireccion" [modal]="true"
+	[contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '40vh','min-height':'100px'}"
+	[baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelDireccion()">
+	<!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Ciudad: *</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="ciu_cli" placeholder="Requerido" class="ng-dirty ng-invalid"
+                pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{0,50}"/>
+                <p-message severity="error" text="Ciudad requerida"
+                    *ngIf="submitDir && !validCiudad">
+                </p-message>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Dirección:*</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="dir_cli" placeholder="Requerido" class="ng-dirty ng-invalid"
+                pattern="[a-zA-Z0-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{0,200}"/>
+                <p-message severity="error" text="Dirección requerida"
+                    *ngIf="submitDir && !validDireccion">
+                </p-message>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Teléfono:</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="tel_cli" placeholder="999-999999" maxlength="10" pKeyFilter="int"/>
+            </div>
+        </div>
+    </div>
+	<!--End Body-->
+	<p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showBarDir"></p-progressBar>
+	<p-footer>
+		
+		<button pButton type="submit" icon="pi pi-save" label="Guardar" (click)="agregarDireccion()"></button>
+		<button pButton class="ui-button-danger" icon="pi pi-times" label="Cancelar" (click)="cancelDireccion()"></button>
+	</p-footer>
+</p-dialog>
+
+<p-dialog header="Registrar Contacto" [(visible)]="displayModalContacto" [modal]="true"
+	[contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '40vh','min-height':'100px'}"
+	[baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelContacto()">
+	<!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Nombre: *</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="nom_cli_con" placeholder="Requerido" class="ng-dirty ng-invalid"/>
+                <p-message severity="error" text="Nombre requerido"
+                    *ngIf="submitCon && !validNombre">
+                </p-message>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>E-mail:</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="ema_cli_con" placeholder="ejemplo@ejemplo.com"/>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Celular:</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="cel_cli_con" placeholder="999999999" maxlength="9" pKeyFilter="int"/>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Anexo:</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="ane_cli_con"/>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Cargo:</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="car_cli_con"/>
+            </div>
+        </div>
+    </div>
+	<!--End Body-->
+	<p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showBarCon"></p-progressBar>
+	<p-footer>
+		
+		<button pButton type="submit" icon="pi pi-save" label="Guardar" (click)="agregarContacto()"></button>
+		<button pButton class="ui-button-danger" icon="pi pi-times" label="Cancelar" (click)="cancelContacto()"></button>
+	</p-footer>
+</p-dialog>
+
+
+
+
+<p-dialog header="Registrar Seccion" [(visible)]="displayModalSeccion" [modal]="true"
+	[contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '40vh','min-height':'100px'}"
+	[baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelSeccion()">
+	<!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Descripcion:*</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="des_sec" placeholder="Requerido" class="ng-dirty ng-invalid"/>
+                <p-message severity="error" text="descripcion requerido"
+                    *ngIf="submitSec && !validSeccion">
+                </p-message>
+                
+            </div>
+        </div>
+        
+    </div>
+	<!--End Body-->
+	<p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showBarSec"></p-progressBar>
+	<p-footer>
+		
+		<button pButton type="submit" icon="pi pi-save" label="Guardar" (click)="agregarSeccion()"></button>
+		<button pButton class="ui-button-danger" icon="pi pi-times" label="Cancelar" (click)="cancelSeccion()"></button>
+	</p-footer>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '50vw'}" position="top" key="deleteDetalle" acceptLabel="Si" rejectLabel="No" baseZIndex="10001"></p-confirmDialog>

@@ -1,0 +1,30 @@
+// :host ::ng-deep .ui-table .ui-table-caption {
+//     background-color: #355275;
+//     border-top: 2px solid #355275;
+//     border-right: 2px solid #355275;
+//     border-left: 2px solid #355275;
+//     color: #ffffff;
+//     text-align: left;
+// }
+:host ::ng-deep .ui-table .ui-table-caption {
+    text-align: left;
+}
+
+.actions {
+    text-align: center;
+}
+
+.send {
+    background-color: #7EDF6D !important;
+    color: black !important;
+}
+
+.anul {
+    background-color: #FFC56D !important;
+    color: black !important;
+}
+
+.nosend {
+    background-color:#FF8686 !important;
+    color: black !important;
+}

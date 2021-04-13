@@ -1,0 +1,7 @@
+{
+    "/api/*":{
+        "target":"https://iqvqxntf.lucusvirtual.es",
+        "secure":false,
+        "logLevel":"debug"
+    }
+}

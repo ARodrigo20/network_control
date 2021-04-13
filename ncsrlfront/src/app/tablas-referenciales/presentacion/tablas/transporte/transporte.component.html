@@ -1,0 +1,193 @@
+<div class="card shadow">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-12">
+            <p-table #dt [value]="transporte" selectionMode="single" [(selection)]="selectedTransporte"
+            dataKey="id_transportista" [loading]="loading" [totalRecords]="totalRegistrosTransporte" [rows]="10" [paginator]="true"
+            [responsive]="true" autoLayout="true" [globalFilterFields]="['id_transportista','NumDoc', 'RznSocial','Placa']">
+                <ng-template pTemplate="caption">
+                    <div class="row justify-content-center align-items-center">
+                        <div class="ui-g-12 ui-md-4 text-left">
+                            <label class="mx-2"> Transporte - Total: {{totalRegistrosTransporte}}</label>
+                        </div>
+                        <div class="ui-g-12 ui-md-4">
+                            
+                        </div>
+                        <div class="ui-g-12 ui-md-4"  style="text-align: right">
+                            <input type="text" pInputText placeholder="Busqueda por id, numero doc, razon social o placa" (input)="dt.filterGlobal($event.target.value, 'contains')">
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header" >
+                    <tr>
+                        <th>ID</th>
+                        <th>Tipo Documento</th>
+                        <th>Numero Doc</th>
+                        <th>Razon Social</th>
+                        <th>Placa</th>
+                        <th>Tipo doc chofer</th>
+                        <th>Numero doc chofer</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-transporte>
+                    <tr [pSelectableRow]="transporte">
+                        <!--<td><strong> <span _ngcontent-qmg-c2="" class="ui-column-title">ID</span> {{ unimed.id_unimed }} </strong></td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Nombre</span> {{ unimed.nom_unimed }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Descripción</span> {{ unimed.des_unimed }}</td>
+                        -->
+                        <td>{{ transporte.id_transportista}}</td>
+                        <td>
+                            {{ (transporte.TipoDoc === 1) ? 'DNI' : '' }}
+                            {{ (transporte.TipoDoc === 4) ? 'CARNET EXTRANJERIA' : '' }}
+                            {{ (transporte.TipoDoc === 6) ? 'RUC' : '' }}
+                            {{ (transporte.TipoDoc === 7) ? 'PASAPORTE' : '' }}
+                        </td>                        
+                        <td>{{transporte.NumDoc}}</td>
+                        <td>{{transporte.RznSocial}}</td>
+                        <td>{{transporte.Placa}}</td>
+                        <td>
+                            {{ (transporte.ChoferTipoDoc === 1) ? 'DNI' : '' }}
+                            {{ (transporte.ChoferTipoDoc === 4) ? 'CARNET EXTRANJERIA' : '' }}
+                            {{ (transporte.ChoferTipoDoc === 6) ? 'RUC' : '' }}
+                            {{ (transporte.ChoferTipoDoc === 7) ? 'PASAPORTE' : '' }}
+                        </td>
+                        
+                        <td>{{transporte.ChoferDoc}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <div class="ui-g-12 ui-md-4 ui-lg-2">
+            <button pButton type="button" label="Crear" class="ui-button-raised ui-button-icon ui-button-success"
+                        icon="pi pi-plus" (click)="newTransporte()">
+                    </button>
+        </div>
+        <div class="ui-g-12 ui-md-4 ui-lg-2">
+            <button pButton type="button" label="Modificar" class="ui-button-raised ui-button-icon ui-button-warning"
+                        icon="pi pi-pencil" (click)="editTransporte()"></button>
+        </div>
+        <div class="ui-g-12 ui-md-4 ui-lg-2">
+            <button pButton type="button" label="Eliminar" class="ui-button-raised ui-button-icon ui-button-danger"
+                        icon="pi pi-trash" (click)="deleteTransporte()"></button>
+        </div>
+    </div>
+</div>
+
+<p-confirmDialog [style]="{width: '50vw'}" position="top" key="deleteTransporte" acceptLabel="Si" rejectLabel="No"  class="fixed-top"></p-confirmDialog>
+
+<p-dialog [header]="titlePanelTransporte" [(visible)]="displayFormTransporte" [modal]="true"
+	[style]="{minWidth: '40%', minHeight: '60px', 'max-height': '60vh'}"
+	[contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '40vh','min-height':'100px'}"
+	[baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelTransporte()">
+	<!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-1"></div>
+            
+            <div class="ui-grid-col-5">
+                <label>Tipo documento</label>
+                <p-dropdown                                   
+                    showClear="true"
+                    filter="true"
+                    [options]="tipoDocu"
+                    [(ngModel)]="selecTipoDocu"
+                    placeholder="Seleccione"
+                    optionLabel="label"                                    
+                ></p-dropdown>
+            </div>
+            <div class="ui-grid-col-5">
+                <label>Numero documento</label>
+                <input
+                    type="text"
+                    pInputText  
+                    [(ngModel)]="num_doc"                                  
+                    placeholder=""                           
+                />
+            </div>
+            
+            <div class="ui-grid-col-1"></div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-1"></div>                        
+            <div class="ui-grid-col-10">
+                <label>Razon Social</label>
+                <input
+                    type="text"
+                    pInputText  
+                    [(ngModel)]="raz_soc"                                  
+                    placeholder=""                           
+                />
+            </div>
+            
+            <div class="ui-grid-col-1"></div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-1"></div>                        
+            <div class="ui-grid-col-10">
+                <label>Placa de transporte</label>
+                <input
+                    type="text"
+                    pInputText  
+                    [(ngModel)]="placa"                                  
+                    placeholder=""                           
+                />
+            </div>
+            
+            <div class="ui-grid-col-1"></div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-1"></div>
+            
+            <div class="ui-grid-col-5">
+                <label>Tipo documento del chofer</label>
+                <p-dropdown                                   
+                    showClear="true"
+                    filter="true"
+                    [options]="tipoDocuCho"
+                    [(ngModel)]="selecTipoDocuCho"
+                    placeholder="Seleccione"
+                    optionLabel="label"                                    
+                ></p-dropdown>
+            </div>
+            <div class="ui-grid-col-5">
+                <label>Numero documento del chofer</label>
+                <input
+                    type="text"
+                    pInputText  
+                    [(ngModel)]="chof_doc"                                  
+                    placeholder=""                           
+                />
+            </div>
+            
+            <div class="ui-grid-col-1"></div>
+        </div>
+
+        
+     <!--   <div class="ui-grid-row">
+            <div class="ui-grid-col-1"></div>
+            <div class="ui-grid-col-5">
+                <label>Nombre (Codigo SUNAT): *</label>                
+                <input pInputText type="text" [(ngModel)]="nom_unimed" placeholder="Requerido" class="ng-dirty ng-invalid"/>
+                <p-message severity="error" text="Nombre es requerido"
+                    *ngIf="submittedUnimed && !validNomUnimed">
+                </p-message>
+            </div>         
+            
+
+            <div class="ui-grid-col-1"></div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-1"></div>
+            <div class="ui-grid-col-5">
+                <label>Descripcion: </label>                
+                <input pInputText type="text" [(ngModel)]="des_unimed" placeholder="" class="ng-dirty ng-invalid"/>
+            </div>
+            <div class="ui-grid-col-1"></div>
+        </div> -->
+    </div>
+	<!--End Body-->
+	<p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showbar"></p-progressBar>
+	<p-footer>
+		<button pButton type="submit" icon="pi pi-save" [label]="submitLabelTransporte" (click)="submitTransporte()"></button>
+		<button pButton class="ui-button-danger" icon="pi pi-times" label="Cancelar" (click)="cancelTransporte()"></button>
+	</p-footer>
+</p-dialog>

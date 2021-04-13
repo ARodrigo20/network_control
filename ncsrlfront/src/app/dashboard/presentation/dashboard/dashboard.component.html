@@ -1,0 +1,19 @@
+<div class="card shadow">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-g-nopad">
+            <p-galleria [value]="images">
+                <ng-template pTemplate="item" let-item>
+                    <img [src]="item.src" [alt]="item.alt" style="max-width: 720px;"/>
+                </ng-template>
+            </p-galleria>
+        </div>
+    </div>
+</div>
+<!-- <div class="card shadow">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <button pButton type="button" label="Enviar Proforma" class="ui-button-raised ui-button-icon" icon="pi pi-file-pdf" (click)="generarPdf()"></button>
+        </div>
+    </div>
+</div> -->
+

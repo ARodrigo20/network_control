@@ -1,0 +1,541 @@
+<div class="card shadow">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+                <div class="ui-g-12">
+                    <p-panel header="Datos">
+                        <div class="ui-g ui-fluid ">
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Fecha emision</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{ fechaEmision| date: 'yyyy/MM/dd'}}"
+                                    placeholder="fechaEmision"
+                                    readonly
+                                    class="readonly"
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                
+                                <label for="icon">Fecha traslado</label>
+                                <p-calendar 
+                                    [(ngModel)]= "fecTraslado"
+                                    [showIcon]="true"
+                                    dateFormat="yy/mm/dd"
+                                    placeholder="yy/mm/dd" 
+                                    inputId="icon">
+                                </p-calendar>
+                                <p-message severity="error" text="Fecha requerido"
+                                    *ngIf="submitted && !valitFechaTraslado">
+                                </p-message>
+                                                              
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <label>Direccion Cliente</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{ orden_cli_dir }}"
+                                    placeholder=""
+                                    readonly
+                                    class="readonly"
+                                />
+                            </div>
+                                                        
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <label>Datos Transporte</label>
+                                <div class="ui-inputgroup">
+                                    <div class="ui-g-8 ui-md-9 ui-g-nopad">
+                                        <p-dropdown
+                                            [options]="transporte"
+                                            [(ngModel)]="selectedTransporte" 
+                                            optionLabel="RznSocial"
+                                            placeholder="Seleccione"
+                                            showClear="true"
+                                            (onChange)="onChangeTransporte($event)"
+
+                                        ></p-dropdown>
+                                        <p-message severity="error" text="Transporte requerido"
+                                            *ngIf="submitted && !validSelectTransporte">
+                                        </p-message>
+                                    </div>
+                                    <div class="ui-g-4 ui-md-3 ui-g-nopad">
+                                        <button pButton type="button" label="nuevo" class="ui-button-raised ui-button-icon ui-button-success d-g-none" style="width: 100%"
+                                            icon="" (click)="nuevoTransporte()">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Serie</label>
+                                <input
+                                    type="text"
+                                    pInputText  
+                                    [(ngModel)]="serie"                                  
+                                    placeholder="serie - ejm. T001"                                                                     
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Motivo traslado</label>
+                                <p-dropdown                                   
+                                    showClear="true"
+                                    filter="true"
+                                    [options]="motivo"
+                                    [(ngModel)]="selecMotivo"
+                                    placeholder="Seleccione"
+                                    optionLabel="label"                                    
+                                ></p-dropdown>
+                                <p-message severity="error" text="motivo requerido"
+                                    *ngIf="submitted && !validSelectMotivo">
+                                </p-message>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Movilidad transporte</label>
+                                <p-dropdown                                   
+                                    showClear="true"
+                                    filter="true"
+                                    [options]="movilidad"
+                                    [(ngModel)]="selecMovilidad"
+                                    placeholder="Seleccione"
+                                    optionLabel="label"                                    
+                                ></p-dropdown>
+                                <p-message severity="error" text="movilidad requerido"
+                                    *ngIf="submitted && !validSelectMovilidad">
+                                </p-message>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>placa</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{ placaTran }}"
+                                    placeholder=""
+                                    readonly
+                                    class="readonly"
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Tipo documento</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{ tipodocTran }}"
+                                    placeholder=""
+                                    readonly
+                                    class="readonly"
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Numero Documento</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{ numdocTran }}"
+                                    placeholder=""
+                                    readonly
+                                    class="readonly"
+                                />
+                            </div>                                                      
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Unidad Peso</label>
+                                <input
+                                    type="text"
+                                    pInputText  
+                                    [(ngModel)]="undPesoTotal"                                  
+                                    placeholder=""                                                                     
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2 d-g-none">
+                                <label>Peso Total </label>
+                                <input
+                                    type="number"
+                                    pInputText
+                                    [(ngModel)]="pesoTotal"
+                                    placeholder=""
+                                />
+                                <p-message severity="error" text="Mayor o igual a 0"
+                                    *ngIf="!validPeso">
+                                </p-message>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2 d-g-none">
+                                <label>Numero de bultos </label>
+                                <input
+                                    type="number"
+                                    pInputText
+                                    [(ngModel)]="numBultos"
+                                    placeholder=""
+                                />
+                                <p-message severity="error" text="Mayor o igual a 0"
+                                    *ngIf="!validBulto">
+                                </p-message>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Ubigeo partida</label>
+                                <input
+                                    type="text"
+                                    pInputText  
+                                    [(ngModel)]="ubigeoPartida"                                  
+                                    placeholder="ubigeo de partida"                                                                     
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <label>Direccion punto partida</label>
+                                <input
+                                    type="text"
+                                    pInputText  
+                                    [(ngModel)]="direccionPartida"                                  
+                                    placeholder="deireccion de partida"                                                                     
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <label>Observaciones</label>
+                                <textarea rows="1" pInputTextarea [(ngModel)]="observacion" autoResize="autoResize" placeholder="Sin Observaciones"></textarea>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Ubigeo llegada</label>
+                                <input
+                                    type="text"
+                                    pInputText  
+                                    [(ngModel)]="ubigeoLlegada"                                  
+                                    placeholder="ubigeo de llegada"                                                                     
+                                />
+                            </div>
+                            <!--<div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <label>Direccion punto llegada</label>
+                                <input
+                                    type="text"
+                                    pInputText  
+                                    [(ngModel)]="direccionLlegada"                                  
+                                    placeholder="direccion de llegada"                                                                     
+                                />
+                            </div>-->
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <label>Direccion punto llegada</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{ orden_cli_dir }}"
+                                    placeholder=""
+                                    readonly
+                                    
+                                />
+                            </div>                            
+                        </div>
+                    </p-panel>
+                </div>
+                <!--<div class="ui-g-12">
+                    <p-panel header="Producto">
+                        <div class="ui-g ui-fluid ">
+                            <div class="ui-g-12 ui-md-6 ui-lg-4 d-g-nopad">
+                                <label>Cantidad *</label>
+                                <input
+                                    type="number"
+                                    pInputText
+                                    [(ngModel)]="cantidad"
+                                    placeholder="cantidad"
+                                />
+                                <p-message severity="error" text="Campo requerido y mayor a 0"
+                                    *ngIf="submittedPS && !validCantidad">
+                                </p-message>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-8">
+                                <label>Descripcion *</label>
+                                <div class="ui-inputgroup">
+                                    <div class="ui-g-8 ui-md-9 ui-g-nopad">
+                                        <p-dropdown
+                                            [options]="productos"
+                                            [(ngModel)]="selectedProducto" 
+                                            optionLabel="des_prod"
+                                            placeholder="Seleccione"
+                                            showClear="true"
+                                            filter="true"
+                                        ></p-dropdown>
+                                        <p-message severity="error" text="Campo requerido"
+                                            *ngIf="submittedPS && !validProducto">
+                                        </p-message>
+                                    </div>
+                                    <div class="ui-g-4 ui-md-3 ui-g-nopad">
+                                        <button pButton type="button" label="Agregar" class="ui-button-raised ui-button-icon ui-button-success d-g-none mx-2" style="width: 100%"
+                                            icon="pi pi-check" (click)="addDetalle()">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </p-panel>
+                </div>-->
+                <div class="ui-g-12">
+                    <p-table [value]="guiaRemisionDetalle" [responsive]="true" [scrollable]="true" [style]="{width:'100%'}">
+                        <ng-template pTemplate="caption">
+                            <div class="row justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-g-nopad mx-3">
+                                    Items *
+                                </div>  
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="colgroup" let-columns>
+                            <colgroup>
+                                <col style="width:90px">
+                                <!--<col style="width:100px">
+                                <col style="width:120px">-->
+                                <col style="width:300px">
+                                <col style="width:60px">
+                                <col style="width:80px">
+                                <!--<col style="width:110px">
+                                <col style="width:84px">-->
+                                <!-- <col style="width:164px">
+                                <col style="width:164px">
+                                <col style="width:100px">
+                                <col style="width:100px"> -->
+                                <col style="width:80px">
+                            </colgroup>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th >CODIGO NTWC</th>
+                                <!--<th >N° PARTE</th>
+                                <th >FABRICANTE</th>-->
+                                <th >DESCRIPCION</th>
+                                <th >UND</th>
+                                <th >CANT.</th>
+                                <!--<th >P.UNITARIO</th>
+                                <th >P.TOTAL</th>-->
+                                <!-- <th >ESTADO</th>
+                                <th >FEC. LLEGADA</th>
+                                <th >CANT. ENTRADA</th>
+                                <th >CANT. FALTANTE</th> -->
+                                <th >ACCION</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-detalle>
+                            <tr>
+                                <td>{{ detalle.codigo }}</td>
+                                <!--<td>{{ detalle.ord_com_det_numpar }}</td>
+                                <td>{{ detalle.ord_com_det_fab }}</td>-->
+                                <td>{{ detalle.descripcion }}</td>
+                                <td>{{ detalle.unidad }}</td>
+                                <td [ngClass]="{'rojo': detalle.cantidad <= 0 }">
+                                    <input pInputText type="number" [(ngModel)]="detalle.cantidad">
+                                </td>
+                                <!--<td [ngClass]="{'rojo': detalle.ord_com_det_preuni <= 0 }">
+                                    <input pInputText type="number" [(ngModel)]="detalle.ord_com_det_preuni">
+                                </td>
+                                <td>
+                                    <span> {{ detalle.getTotal() | number : '1.2-2' }} </span>
+                                </td>-->
+                                <!-- <td>
+                                    <p-dropdown
+                                        [options]="estados" 
+                                        [(ngModel)]="detalle.estado_det" 
+                                        showClear="true" 
+                                        optionLabel="label"
+                                        placeholder="Estado"
+                                        [style]="{'width':'100%','min-width':'100%'}"
+                                        appendTo="body"
+                                    ></p-dropdown> 
+                                </td>
+                                <td>
+                                    <p-calendar 
+                                        [showIcon]="true"
+                                        showButtonBar="true"
+                                        [(ngModel)]="detalle.ord_com_det_feclleg"
+                                        dateFormat="dd/mm/yy"
+                                        [monthNavigator]="true" 
+                                        [yearNavigator]="true"
+                                        placeholder="dd/mm/yy"
+                                        yearRange="2000:{{year_now}}"
+                                        [readonlyInput]="true"
+                                        appendTo="body"
+                                    ></p-calendar>
+                                </td>
+                                <td>
+                                    <input pInputText type="number" [(ngModel)]="detalle.ord_com_det_canent">
+                                </td>
+                                <td>
+                                    <span> {{ detalle.getCanFaltante() | number : '1.2-2' }} </span>
+                                </td> -->
+                                <td class="text-center">
+                                    <button pButton type="button" class="ui-button-raised ui-button-icon ui-button-danger"
+                                        icon="pi pi-trash" (click)="deleteDetalle(detalle)">
+                                    </button>
+                                </td>                                
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="summary">
+                            <div class="ui-g ui-fluid justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-g-nopad mx-1 text-right">
+                                    Mostrando {{guiaRemisionDetalle}} items
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-table>
+                    <p-message severity="error" text="Se requiere por lo menos un item"
+                        *ngIf="submitted && !validItems">
+                    </p-message>
+                </div>
+                                
+                <!-- INSERTANDO LADO DE DETALLE -->
+
+                <!--<div class="ui-g-12">
+                    <div class="ui-g-12">
+                        <div class="ui-g ui-fluid row justify-content-center align-items-center">
+                            <div class="ui-g-12 ui-lg-2 ui-lg-offset-8 ui-md-offset-4 text-right">
+                                <label >BASE IMPONIBLE</label>
+                            </div>
+                            <div class="ui-g-12 ui-lg-2 text-right">
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{baseImponible | number : '1.2-2' }}"                                    
+                                    placeholder="0.000"
+                                    class="text-right readonly-det"
+                                    readonly
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-lg-2 ui-lg-offset-8 ui-md-offset-4 text-right">
+                                <label>18% I.G.V.</label>
+                            </div>
+                            <div class="ui-g-12 ui-lg-2 text-right">
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{igv | number : '1.2-2' }}"                                    
+                                    placeholder="0.000"
+                                    class="text-right readonly-det"
+                                    readonly
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-lg-2 ui-lg-offset-8 ui-md-offset-4 text-right">
+                                <label>TOTAL</label>
+                            </div>
+                            <div class="ui-g-12 ui-lg-2 text-right">
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{total | number : '1.2-2' }}"                                    
+                                    placeholder="0.000"
+                                    class="text-right readonly-det"
+                                    readonly
+                                />
+                            </div>
+                        </div>
+                    </div>        
+                </div>-->
+                <div class="ui-g-12" *ngIf="showbar">
+                    <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+                </div>
+                <!-- FIN DE LA MODIFICACION -->
+                <div class="ui-g-12 ui-g-nopad">
+                    <div class="ui-g-12 ui-md-4 ui-lg-8"></div>
+                    <div class="ui-g-12 ui-md-4 ui-lg-2">
+                        <button type="button" pButton icon="pi pi-save" (click)="submit()" label="Guardar"
+                        class="ui-button-primary"></button>
+                    </div>
+                    <div class="ui-g-12 ui-md-4 ui-lg-2">
+                        <button type="button" pButton icon="pi pi-times" (click)="cancel()" label="Cancelar"
+                        class="ui-button-danger"></button>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>    
+</div>
+
+<p-dialog header="Registrar Transporte" [(visible)]="displayModalTransporte" [modal]="true"
+	[contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '40vh','min-height':'100px'}"
+	[baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelTransporte()">
+	<!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-1"></div>
+            
+            <div class="ui-grid-col-5">
+                <label>Tipo documento</label>
+                <p-dropdown                                   
+                    showClear="true"
+                    filter="true"
+                    [options]="tipoDocu"
+                    [(ngModel)]="selecTipoDocu"
+                    placeholder="Seleccione"
+                    optionLabel="label"                                    
+                ></p-dropdown>
+            </div>
+            <div class="ui-grid-col-5">
+                <label>Numero documento</label>
+                <input
+                    type="text"
+                    pInputText  
+                    [(ngModel)]="num_doc"                                  
+                    placeholder=""                           
+                />
+            </div>
+            
+            <div class="ui-grid-col-1"></div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-1"></div>                        
+            <div class="ui-grid-col-10">
+                <label>Razon Social</label>
+                <input
+                    type="text"
+                    pInputText  
+                    [(ngModel)]="raz_soc"                                  
+                    placeholder=""                           
+                />
+            </div>
+            
+            <div class="ui-grid-col-1"></div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-1"></div>                        
+            <div class="ui-grid-col-10">
+                <label>Placa de transporte</label>
+                <input
+                    type="text"
+                    pInputText  
+                    [(ngModel)]="placa"                                  
+                    placeholder=""                           
+                />
+            </div>
+            
+            <div class="ui-grid-col-1"></div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-1"></div>
+            
+            <div class="ui-grid-col-5">
+                <label>Tipo documento del chofer</label>
+                <p-dropdown                                   
+                    showClear="true"
+                    filter="true"
+                    [options]="tipoDocuCho"
+                    [(ngModel)]="selecTipoDocuCho"
+                    placeholder="Seleccione"
+                    optionLabel="label"                                    
+                ></p-dropdown>
+            </div>
+            <div class="ui-grid-col-5">
+                <label>Numero documento del chofer</label>
+                <input
+                    type="text"
+                    pInputText  
+                    [(ngModel)]="chof_doc"                                  
+                    placeholder=""                           
+                />
+            </div>
+            
+            <div class="ui-grid-col-1"></div>
+        </div>
+        
+    </div>
+	<!--End Body-->
+	<p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showBarTransporte"></p-progressBar>
+	<p-footer>
+		
+		<button pButton type="submit" icon="pi pi-save" label="Guardar" (click)="agregarTransporte()"></button>
+		<button pButton class="ui-button-danger" icon="pi pi-times" label="Cancelar" (click)="cancelTransporte()"></button>
+    </p-footer>
+    
+    
+</p-dialog>

@@ -1,0 +1,107 @@
+<div class="card shadow">
+    <p-tabView>
+        <p-tabPanel header="Ordenes de compra Pendientes" leftIcon="pi pi-check">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-12">
+                    <p-table #dt [value]="ordenesPendiente" selectionMode="single"
+                        [(selection)]="selectedOrdenPendiente" styleClass="ui-table-customers" dataKey="id_ord_com"
+                        [loading]="loadingPendiente" [totalRecords]="totalPendiente" [rows]="rowsNumber" [paginator]="true"
+                        [responsive]="true" autoLayout="true"
+                        [globalFilterFields]="['ord_com_fec','ord_com_cod','prov_razsoc']">
+                        <ng-template pTemplate="caption">
+                            <div class="row justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-md-4">
+                                    <label class="mx-2">Pendientes - Total: {{ totalPendiente }}</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-4">
+
+                                </div>
+                                <div class="ui-g-12 ui-md-4" style="text-align: right">
+                                    <input type="text" pInputText placeholder="Busqueda por nombre o número"
+                                        (input)="dt.filterGlobal($event.target.value, 'contains')">
+                                </div>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Código</th>
+                                <th>Colaborador</th>
+                                <th>Proveedor</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-ordenesPendiente>
+                            <tr id="ord{{ ordenesPendiente.id_ord_com }}" [pSelectableRow]="ordenesPendiente">
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Fecha:</span>
+                                    {{ ordenesPendiente.ord_com_fec | date: 'dd/MM/yyyy' }}</td>
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Código:</span>
+                                    {{ ordenesPendiente.ord_com_cod }}</td>
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Colaborador:</span>
+                                    {{ ordenesPendiente.usu_ema }}</td>
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Proveedor:</span>
+                                    {{ ordenesPendiente.prov_razsoc }}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div class="ui-g-12" *ngIf="showbar">
+                    <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <button id="btnReg" pButton type="button" label="Registrar Ingreso"
+                        class="ui-button-raised ui-button-icon ui-button-success" icon="pi pi-plus" (click)="registrarIngreso()">
+                    </button>
+                </div>
+            </div>
+        </p-tabPanel>
+        <!-- <p-tabPanel header="Ordenes de compra Completas" leftIcon="pi pi-times">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-12">
+                    <p-table #dta [value]="ordenesCompletas" selectionMode="single"
+                        [(selection)]="selectedOrdenCompleta" styleClass="ui-table-customers" dataKey="cotprov_id"
+                        [loading]="loadingCompletas" [totalRecords]="totalCompletas" [rows]="rowsNumber"
+                        [paginator]="true" [responsive]="true" autoLayout="true"
+                        [globalFilterFields]="['cotprov_cod','cotprov_proy_nom']">
+                        <ng-template pTemplate="caption">
+                            <div class="row justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-md-4">
+                                    <label class="mx-2">Cotizaciones Anuladas - Total:</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-4">
+
+                                </div>
+                                <div class="ui-g-12 ui-md-4" style="text-align: right">
+                                    <input type="text" pInputText placeholder="Busqueda por nombre o número"
+                                        (input)="dta.filterGlobal($event.target.value, 'contains')">
+                                </div>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Codigo</th>
+                                <th>Colaborador</th>
+                                <th>Proveedor</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-ordenesPendiente>
+                            <tr [pSelectableRow]="ordenesPendiente">
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Fecha:</span>
+                                    {{ ordenesPendiente.ord_com_fec | date: 'dd/MM/yyyy' }}</td>
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Código:</span>
+                                    {{ ordenesPendiente.ord_com_cod }}</td>
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Colaborador:</span>
+                                    {{ ordenesPendiente.usu_ema }}</td>
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Proveedor:</span>
+                                    {{ ordenesPendiente.prov_razsoc }}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div class="ui-g-12" *ngIf="showbar">
+                    <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+                </div>
+            </div>
+        </p-tabPanel> -->
+    </p-tabView>
+</div>

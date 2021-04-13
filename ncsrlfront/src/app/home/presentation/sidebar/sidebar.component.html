@@ -1,0 +1,193 @@
+<nav class="sidebar" [ngClass]="{sidebarPushRight: isActive, collapsed: collapsed}">
+    <div class="list-group">
+        <a routerLink="/dashboard" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-bar-chart-o"></i>&nbsp;
+            <span>{{ 'Inicio' }}</span>
+        </a>
+        <div class="nested-menu">
+            <a class="list-group-item" (click)="addExpandClass('pages')">
+                <i class="fa fa-fw fa-table"></i>&nbsp;
+                <span>{{ 'Inventario' }}</span>
+            </a>
+            <li class="nested" [class.expand]="showMenu === 'pages'">
+                <ul class="submenu" *ngIf="!collapsed">
+                    <li>
+                        <a [routerLink]="['/productos']" [routerLinkActive]="['router-link-active']" >
+                            <i class="fa fa-fw fa-desktop"></i>&nbsp;
+                            <span>{{ 'Productos' }}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a [routerLink]="['/kardex']" [routerLinkActive]="['router-link-active']" >
+                            <i class="fa fa-fw fa-desktop"></i>&nbsp;
+                            <span>{{ 'Kardex' }}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a [routerLink]="['/registro-ingreso']" [routerLinkActive]="['router-link-active']" >
+                            <i class="fa fa-fw fa-desktop"></i>&nbsp;
+                            <span>{{ 'Registro Ingreso' }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </div>
+
+        <div class="nested-menu">
+            <a class="list-group-item" (click)="addExpandClass('page')">
+                <i class="fa fa-fw fa-user"></i>&nbsp;
+                <span>{{ 'Usuarios' }}</span>
+            </a>
+            <li class="nested" [class.expand]="showMenu === 'page'">
+                <ul class="submenu" *ngIf="!collapsed">
+                    <li>
+                        <a [routerLink]="['/colaborador']" [routerLinkActive]="['router-link-active']" >
+                            <i class="fa fa-fw fa-user-plus"></i>&nbsp;
+                            <span>{{ 'Colaborador' }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </div>
+        <a [routerLink]="['/clientes']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-users"></i>&nbsp;
+            <span>{{ 'Clientes' }}</span>
+        </a>
+        <a [routerLink]="['/proveedores']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-users"></i>&nbsp;
+            <span>{{ 'Proveedores' }}</span>
+        </a>
+        <a [routerLink]="['/proyectos']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-folder-open"></i>&nbsp;
+            <span>{{ 'Proyectos' }}</span>
+        </a>
+        <div class="nested-menu">
+            <a class="list-group-item" (click)="addExpandClass('pagess')">
+                <i class="fa fa-fw fa-file-text"></i>&nbsp;
+                <span>{{ 'Cotizaciones' }}</span>
+            </a>
+            <li class="nested" [class.expand]="showMenu === 'pagess'">
+                <ul class="submenu" *ngIf="!collapsed">
+                    <li>
+                        <a [routerLink]="['/cotizaciones-cli']" [routerLinkActive]="['router-link-active']" >
+                            <i class="fa fa-fw fa-file-text"></i>&nbsp;
+                            <span>{{ 'Cliente' }}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a [routerLink]="['/cotizaciones-prov']" [routerLinkActive]="['router-link-active']" >
+                            <i class="fa fa-fw fa-file-text"></i>&nbsp;
+                            <span>{{ 'Proveedor' }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </div>
+        <!-- <a [routerLink]="['/facturas']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-file-text"></i>&nbsp;
+            <span>{{ 'Facturas' }}</span>
+        </a> -->
+        <a [routerLink]="['/proforma']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-file-text"></i>&nbsp;
+            <span>{{ 'Proforma' }}</span>
+        </a>
+        <div class="nested-menu">
+            <a class="list-group-item" (click)="addExpandClass('pag')">
+                <i class="fa fa-fw fa-truck"></i>&nbsp;
+                <span>{{ 'Orden de Compra' }}</span>
+            </a>
+            <li class="nested" [class.expand]="showMenu === 'pag'">
+                <ul class="submenu" *ngIf="!collapsed">
+                    <li>                       
+                        <a [routerLink]="['/orden']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+                            <i class="fa fa-fw fa-truck"></i>&nbsp;
+                            <span>{{ 'Proveedor' }}</span>
+                        </a>
+                    </li>
+                    <li>                       
+                        <a [routerLink]="['/ordenCompraCli']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+                            <i class="fa fa-fw fa-truck"></i>&nbsp;
+                            <span>{{ 'Cliente' }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </div>
+        <div class="nested-menu">
+            <a class="list-group-item" (click)="addExpandClass('pagesss')">
+                <i class="fa fa-fw fa-file-text"></i>&nbsp;
+                <span>{{ 'Facturacion' }}</span>
+            </a>
+            <li class="nested" [class.expand]="showMenu === 'pagesss'">
+                <ul class="submenu" *ngIf="!collapsed">
+                    <li>
+                        <a [routerLink]="['/facturas']" [routerLinkActive]="['router-link-active']">
+                            <i class="fa fa-fw fa-file-text"></i>&nbsp;
+                            <span>{{ 'Facturas' }}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a [routerLink]="['/guia-remision']" [routerLinkActive]="['router-link-active']" >
+                            <i class="fa fa-fw fa-file-text"></i>&nbsp;
+                            <span>{{ 'Guia Remision' }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </div>
+        <!-- <a [routerLink]="['/guia-remision']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-credit-card"></i>&nbsp;
+            <span>{{ 'Guia Remision' }}</span>
+        </a> -->
+        <a [routerLink]="['/finanzas']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-credit-card"></i>&nbsp;
+            <span>{{ 'Finanzas' }}</span>
+        </a>
+        <a [routerLink]="['/tablas-referenciales']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-th-list"></i>&nbsp;
+            <span>{{ 'Tablas Referenciales' }}</span>
+        </a>
+        <a [routerLink]="['/logs']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-history"></i>&nbsp;
+            <span>{{ 'Logs del Sistema' }}</span>
+        </a>
+        <div class="header-fields">
+            <a class="list-group-item">
+                <!-- <span><i class="fa fa-arrows-h"></i>&nbsp; RTL/LTR</span> -->
+            </a>
+            <div class="nested-menu ">
+                <a class="list-group-item" (click)="addExpandClass('profile')">
+                    <span><i class="fa fa-user"></i>&nbsp; {{userName}}</span>
+                </a>
+                <li class="nested" [class.expand]="showMenu === 'profile'">
+                    <ul class="submenu">
+                        <li>
+                            <a (click)="goToEmpresa()" style="cursor: pointer">
+                                <span><i class="fa fa-fw fa-address-card"></i> {{ 'Empresa' }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a (click)="goToChangePassword()" style="cursor: pointer">
+                                <span><i class="fa fa-fw fa-lock"></i> {{ 'Cambiar Contraseña' }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a (click)="goToFirma()" style="cursor: pointer">
+                                <span><i class="fa fa-fw fa-pinterest-square"></i> {{ 'Firma' }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a (click)="onLoggedout()" style="cursor: pointer">
+                                <span><i class="fa fa-fw fa-power-off"></i> {{ 'Log Out' }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </div>
+        </div>
+    </div>
+    <div class="toggle-button" [ngClass]="{collapsed: collapsed}" (click)="toggleCollapsed()">
+        <i class="fa fa-fw fa-angle-double-{{collapsed?'right':'left'}}"></i>&nbsp;
+        <span>{{ 'Collapse Sidebar' | translate }}</span>
+    </div>
+</nav>

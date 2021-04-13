@@ -1,0 +1,6 @@
+<app-header></app-header>
+<app-sidebar (collapsedEvent)="receiveCollapsed($event)"></app-sidebar>
+<section class="main-container" [ngClass]="{collapsed: collapedSideBar}">
+    <p-breadcrumb [model]="gS.items" [home]="gS.home"></p-breadcrumb>
+    <router-outlet></router-outlet>
+</section>

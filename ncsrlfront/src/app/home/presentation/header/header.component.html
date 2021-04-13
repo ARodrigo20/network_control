@@ -1,0 +1,26 @@
+<nav class="navbar navbar-expand-lg fixed-top">
+    <a class="navbar-brand" href="#">NETWORK CONTROL&nbsp;&nbsp;</a>
+    <button class="navbar-toggler" type="button" (click)="toggleSidebar()">
+        <!-- <span class="navbar-toggler-icon"></span> -->
+        <i class="fa fa-bars text-muted" aria-hidden="true"></i>
+    </button>
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item d-none d-xl-block">
+            </li> &nbsp;
+            <li class="nav-item">
+            </li> &nbsp;
+            <li class="nav-item dropdown" ngbDropdown placement="bottom-right">
+                <a href="javascript:void(0)" class="nav-link" ngbDropdownToggle>
+                    <i class="fa fa-user"></i>&nbsp;{{userName}}<b class="caret"></b>
+                </a>
+                <div class="dropdown-menu" ngbDropdownMenu> 
+                    <button class="dropdown-item" (click)="goToEmpresa()"><i class="fa fa-fw fa-address-card"></i> Empresa</button>
+                    <button class="dropdown-item" (click)="goToChangePassword()"><i class="fa fa-fw fa-lock"></i> Cambiar Contraseña</button>
+                    <button class="dropdown-item" (click)="goToFirma()"><i class="fa fa-fw fa-pinterest-square"></i> Firma</button>
+                    <button class="dropdown-item" (click)="onLoggedout()"><i class="fa fa-fw fa-power-off"></i> Cerrar Sesion</button>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>

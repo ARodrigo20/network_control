@@ -1,0 +1,124 @@
+<div class="card shadow">
+    <p-tabView>
+        <p-tabPanel header="guias de remision" leftIcon="pi pi-check">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-12">
+                    <p-table #dt [value]="guiaActivas" selectionMode="single" [(selection)]="selectedGuiaActiva" styleClass="ui-table-customers"
+                    dataKey="id_guia_remision" [loading]="loadingActivas" [totalRecords]="totalActivas" [rows]="rowsNumber" [paginator]="true"
+                    [responsive]="true" autoLayout="true" [globalFilterFields]="['correlativo','fechaEmision','cliente.razsoc_cli','envio.direccionSalida']">
+                        <ng-template pTemplate="caption">
+                            <div class="row justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-md-4">
+                                    <label class="mx-2">Guias Remision Activas - Total: {{ totalActivas }}</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-4">
+                                    
+                                </div>
+                                <div class="ui-g-12 ui-md-4"  style="text-align: right">
+                                    <input type="text" pInputText placeholder="Busqueda" (input)="dt.filterGlobal($event.target.value, 'contains')">
+                                </div>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Correlativo</th>
+                                <th>Fecha</th>                                
+                                <!--<th>Usuario</th>-->
+                                <!--<th>Proveedor</th>-->
+                                <th>Cliente</th>
+                                <th>direccion salida</th>
+                                <th>Direccion llegada</th>
+                                <!--<th>Contacto</th>
+                                <th>Direccion</th>-->                                
+                                <th>Estado</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-guia>
+                            <tr [pSelectableRow]="guia">
+                                <td style="width:10em">{{ guia.serie + guia.correlativo }}</td>                             
+                                <td style="width:8em">{{ guia.fechaEmision | date: 'yyyy-MM-dd' }}</td>                      
+                                <td>{{ (guia.cliente) ? guia.cliente.razsoc_cli : ''}}</td>
+                                <td>{{ (guia.envio) ? guia.envio.direccionSalida : ''}}</td>
+                                <td>{{ (guia.envio) ? guia.envio.direccionLlegada : ''}}</td>
+                                <!--<td>{{ (orden.proveedor) ? orden.proveedor.razsoc_prov : ''}}</td>
+                                <td>{{ orden.ord_com_prov_con }}</td>
+                                <td>{{ orden.ord_com_prov_dir }}</td>-->
+                                <td [ngClass]="{'send': guia.est_env === 'E', 'nosend': guia.est_env === 'P'}">
+                                    <span _ngcontent-qmg-c2="" class="ui-column-title">Envío:</span>
+                                    {{ (guia.est_env === 'E') ? 'Aceptado' : 'No Enviado'}}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div class="ui-g-12" *ngIf="showbar">
+                    <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+                </div>
+                
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <button pButton type="button" label="Enviar (SUNAT)" class="ui-button-raised ui-button-icon ui-button-success"
+                        icon="pi pi-directions" (click)="enviar()"></button>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <button pButton type="button" label="Generar PDF" class="ui-button-raised ui-button-icon"
+                        icon="pi pi-file-pdf" (click)="generarPdf()">  
+                    </button>
+                </div>
+                                
+            </div>
+        </p-tabPanel>
+        <!--<p-tabPanel header="Ordenes de Compra Anuladas" leftIcon="pi pi-times">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-12">
+                    <p-table #dt2 [value]="ordenesAnuladas" selectionMode="single" [(selection)]="selectedOrdenAnulada" styleClass="ui-table-customers"
+                    dataKey="id_ord_com" [loading]="loadingAnuladas" [totalRecords]="totalAnuladas" [rows]="rowsNumber" [paginator]="true"
+                    [responsive]="true" autoLayout="true" [globalFilterFields]="['ord_com_cod','ord_com_fec','usuario.nom_col','proveedor.razsoc_prov','ord_com_prov_con','ord_com_prov_dir']">
+                        <ng-template pTemplate="caption">
+                            <div class="row justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-md-4">
+                                    <label class="mx-2">Ordenes de Compra Anuladas - Total: {{ totalAnuladas }}</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-4">
+                                    
+                                </div>
+                                <div class="ui-g-12 ui-md-4"  style="text-align: right">
+                                    <input type="text" pInputText placeholder="Busqueda" (input)="dt2.filterGlobal($event.target.value, 'contains')">
+                                </div>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Codigo</th>
+                                <th>Fecha</th>                                
+                                <th>Usuario</th>
+                                <th>Proveedor</th>
+                                <th>Contacto</th>
+                                <th>Direccion</th>                                
+                                <th>Estado</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-orden>
+                            <tr [pSelectableRow]="orden">
+                                <td style="width:10em">{{ orden.ord_com_cod }}</td>                              
+                                <td style="width:8em">{{ orden.ord_com_fec | date: 'yyyy-MM-dd' }}</td>                      
+                                <td>{{ (orden.usuario) ? orden.usuario.nom_col : ''}}</td>
+                                <td>{{ (orden.proveedor) ? orden.proveedor.razsoc_prov : ''}}</td>
+                                <td>{{ orden.ord_com_prov_con }}</td>
+                                <td>{{ orden.ord_com_prov_dir }}</td>
+                                <td [ngClass]="{'send': orden.est_env === 1, 'nosend': orden.est_env === 0}">
+                                    <span _ngcontent-qmg-c2="" class="ui-column-title">Envío:</span>
+                                    {{ (orden.est_env === 1) ? 'Enviado' : 'No Enviado'}}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div class="ui-g-12" *ngIf="showbar">
+                    <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <button pButton type="button" label="Generar PDF" class="ui-button-raised ui-button-icon"
+                        icon="pi pi-file-pdf" (click)="generarPdfOrdenAnulada(1)" [disabled]="loadingPdf"></button>
+                </div>                
+            </div>
+        </p-tabPanel>-->
+    </p-tabView>
+</div>

@@ -1,0 +1,41 @@
+<div class="card shadow">
+    <div class="ui-g ui-fluid">
+        
+        <div class="ui-g-12 ui-md-12">
+            <p-table [value]="logs" 
+            dataKey="id_regcam" [loading]="loading" [totalRecords]="totalRegistros" [rows]="rowsNumber" [paginator]="true"
+            [responsive]="true" autoLayout="true">
+                <ng-template pTemplate="caption">
+                    <div class="row justify-content-center align-items-center">
+                        <div class="ui-g-12 ui-md-4 text-left">
+                            <label class="mx-2">Registro de Cambios</label>
+                        </div>
+                        <div class="ui-g-12 ui-md-4">
+                            
+                        </div>
+                        <div class="ui-g-12 ui-md-4 text-right">
+                            <button pButton type="button" icon="pi pi-refresh" (click)="getLogs()"></button>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Descripcion</th>
+                        <th>Tipo de Cambio</th>
+                        <th>Usuario</th>
+                    </tr>
+                </ng-template>
+                <!-- [ngClass]="log.id_tipcam === 1 ? 'create' : 'delete'" -->
+                <ng-template pTemplate="body" let-log>
+                    <tr [ngClass]="{'create': log.id_tipcam === 1 , 'update': log.id_tipcam === 2, 'delete': log.id_tipcam === 3, 'anul': log.id_tipcam === 4}" >
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Fecha</span> {{ log.created_at | date: 'MM/dd/yyyy, h:mm a' }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Descripción</span> {{ log.des_regcam }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Cambio</span> <span *ngIf="log.tipo_cambio">{{ log.tipo_cambio.des_tipcam }}</span></td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Usuario</span> <span *ngIf="log.users">{{ log.users.email }}</span></td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,572 @@
+<div class="card shadow">
+    <div class="ui-g ui-fluid">
+        
+        <div class="ui-g-12 ui-md-12">
+            <p-table #dt [value]="proveedores" selectionMode="single" [(selection)]="selectedProveedor"
+            dataKey="id_prov" [loading]="loading" [totalRecords]="totalRegistros" [rows]="rowsNumber" [paginator]="true"
+            [responsive]="true" autoLayout="true" [globalFilterFields]="['razsoc_prov', 'num_doc_prov']">
+                <ng-template pTemplate="caption">
+                    <div class="row justify-content-center align-items-center">
+                        <div class="ui-g-12 ui-md-4">
+                            <label class="mx-2">Lista de Proveedores - Total: {{totalRegistros}}</label>
+                        </div>
+                        <div class="ui-g-12 ui-md-4">
+                            
+                        </div>
+                        <div class="ui-g-12 ui-md-4"  style="text-align: right">
+                            <input type="text" pInputText placeholder="Busqueda por Razón Social y Nro Documento" (input)="dt.filterGlobal($event.target.value, 'contains')">
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th>Razón Social</th>
+                        <th>Tipo Documento</th>
+                        <th>N. Documento</th>
+                        <th>E-mail</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-proveedor>
+                    <tr [pSelectableRow]="proveedor">
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Razón S.</span> {{ proveedor.razsoc_prov }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">TipoDoc</span> <span *ngIf="proveedor.tipo_documento">{{ proveedor.tipo_documento.des_tipdoc }}</span></td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">N. Doc</span> {{ proveedor.num_doc_prov }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">E-mail</span> {{ proveedor.ema_prov }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <div class="ui-g-12 ui-md-6 ui-lg-2">
+            <button pButton type="button" label="Crear" class="ui-button-raised ui-button-icon ui-button-success"
+                icon="pi pi-plus" (click)="newProveedor()">
+            </button>
+        </div>
+        <div class="ui-g-12 ui-md-6 ui-lg-2">
+            <button pButton type="button" label="Modificar" class="ui-button-raised ui-button-icon ui-button-warning"
+                icon="pi pi-pencil" (click)="editProveedor()"></button>
+        </div>
+        <div class="ui-g-12 ui-md-6 ui-lg-2">
+            <button pButton type="button" label="Eliminar" class="ui-button-raised ui-button-icon ui-button-danger"
+                icon="pi pi-trash" (click)="deleteProveedor()"></button>
+        </div>
+        <div class="ui-g-12 ui-md-6 ui-lg-2">
+            <button pButton type="button" label="Administrar" class="ui-button-raised ui-button-icon ui-button-secondary"
+                icon="pi pi-pencil" (click)="administrarProveedor()"></button>
+        </div>
+    </div>
+</div>
+<!-- <p-toast position="top-right" class="fixed-top"></p-toast> -->
+<p-confirmDialog [style]="{width: '50vw'}" position="top" key="deleteProveedor" acceptLabel="Si" rejectLabel="No" baseZIndex="10001"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '50vw'}" position="top" key="deleteDireccion"  acceptLabel="Si" rejectLabel="No"   baseZIndex="10001"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '50vw'}" position="top" key="deleteColaborador" acceptLabel="Si" rejectLabel="No"  baseZIndex="10001"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '50vw'}" position="top" key="deleteBanco" acceptLabel="Si" rejectLabel="No"  baseZIndex="10001"></p-confirmDialog>
+
+<p-dialog [header]="titlePanel" [(visible)]="displayModal" [modal]="true"
+	[style]="{minWidth: '60%', minHeight: '150px', 'max-height': '90vh'}"
+	[contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '60vh','min-height':'250px'}"
+	[baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancel()">
+	<!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <p>Razón Social: *</p>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="razsoc_prov" placeholder="Requerido" class="ng-dirty ng-invalid"
+                pattern="[a-zA-Z0-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{2,200}"/>
+            </div>
+            <div class="ui-grid-col-2">
+                <p-message severity="error" text="Razón social es requerido"
+                    *ngIf="submitted && !validRazSoc">
+                </p-message>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <label for="id_tipdoc">Tipo de Documento: *</label>
+                <p-dropdown
+                    [options]="tipdoc"
+                    [(ngModel)]="selectedTipdoc" 
+                    filter="true"
+                    optionLabel="des_tipdoc"
+                    placeholder="Seleccione"
+                    showClear="true"
+                ></p-dropdown>
+                <p-message severity="error" text="TipoDocumento es requerido"
+                    *ngIf="submitted && !validTipDoc">
+                </p-message>
+            </div>
+            <div class="ui-grid-col-4">
+                <label for="num_doc_prov">Número de Documento: *</label>
+                <input pInputText type="text" pKeyFilter="int" [(ngModel)]="num_doc_prov" placeholder="Requerido" pattern="[0-9]{0,11}"/>
+                <p-message severity="error" text="Número de Documento es requerido"
+                    *ngIf="submitted && !validNumDoc">
+                </p-message>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <p>Email:</p>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="ema_prov" placeholder="ejemplo@ejemplo.com" [pKeyFilter]="blockSpace"
+                pattern="[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]{2,85}@[A-Za-z0-9]{2,10}(?:\.[a-zA-Z0-9-.]{1,5})"/>
+            </div>
+        </div>
+    </div>
+	<!--End Body-->
+	<p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showbar"></p-progressBar>
+	<p-footer>
+		
+		<button type="button" pButton icon="pi pi-save" (click)="submit()" [label]="submitLabel"
+			class="ui-button-primary"></button>
+		<button type="button" pButton icon="pi pi-times" (click)="cancel()" label="Cancelar"
+			class="ui-button-danger"></button>
+	</p-footer>
+</p-dialog>
+<!--FUNCIONA-->
+<p-dialog [header]="titlePanelAdmin" [(visible)]="displayModalAdmin" [modal]="true"
+    [style]="{width: '70vw'}"
+    [baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelAdmin()" >
+    <!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+        <div class="ui-grid-row">
+            <div class="card shadow">
+                <p-table [value]="direcciones" dataKey="id_prov_dir" editMode="row" [scrollable]="true" scrollHeight="190px" [responsive]="true" 
+                    autoLayout="true" [style]="{maxWidth: '1500px', minHeight: '260px'}">
+                    <ng-template pTemplate="caption">
+                        <div class="ui-grid-row justify-content-center align-items-center">
+                            <div class="ui-grid-col-4">
+                                <label class="mx-2">Sucursales</label>
+                            </div>
+                            <div class="ui-grid-col-6" style="text-align: right" >
+                                
+                            </div>
+                            <div class="ui-grid-col-2" style="text-align: right">
+                                <button pButton type="button" label="Agregar Dirección" class="ui-button-raised ui-button-success" icon="pi pi-plus" (click)="newDireccion()"></button>
+                            </div>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width:16em">Ciudad</th>
+                            <th style="width:24em">Dirección</th>
+                            <th style="width:16em">Teléfono</th>
+                            <th style="width:6em"></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-direcc let-editing="editing" let-ri="rowIndex">
+                        <tr [pEditableRow]="direcc" *ngIf="direcc.est_reg !== 'E'">
+                            <td pEditableColumn style="width:16em">
+                                <span _ngcontent-qmg-c2="" class="ui-column-title">Ciudad:</span>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input pInputText type="text" [(ngModel)]="direcc.ciu_prov" placeholder="Requerido"
+                                        pattern="[a-zA-Z0-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{0,50}">
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{direcc.ciu_prov}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td pEditableColumn style="width:24em">
+                                <span _ngcontent-qmg-c2="" class="ui-column-title">Dirección:</span>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input pInputText type="text" [(ngModel)]="direcc.dir_prov" placeholder="Requerido"
+                                        pattern="[a-zA-Z0-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,./'-]{0,200}">
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{direcc.dir_prov}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td pEditableColumn style="width:16em">
+                                <span _ngcontent-qmg-c2="" class="ui-column-title">Teléfono:</span>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input pInputText type="text" [(ngModel)]="direcc.tel_prov" placeholder="999-999999" pattern="[0-9]{1,3}-[0-9]{5,6}" pKeyFilter="int">
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{direcc.tel_prov}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td  style="width:6em; text-align:center">
+                                <button pButton type="button" icon="pi pi-trash" class="ui-button-info" (click)="deleteDireccion(direcc)"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+    <br>        <!--funciona-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+        <div class="ui-grid-row">
+            <div class="card shadow">
+                <p-table [value]="colaboradores" dataKey="id_prov_col" editMode="row" [scrollable]="true" scrollHeight="190px" [responsive]="true"
+                    autoLayout="true" [style]="{maxWidth: '1500px', minHeight: '260px'}">
+                    <ng-template pTemplate="caption">
+                        <div class="ui-grid-row justify-content-center align-items-center">
+                            <div class="ui-grid-col-4">
+                                <label class="mx-2">Colaboladores</label>
+                            </div>
+                            <div class="ui-grid-col-6" style="text-align: right" >
+                                
+                            </div>
+                            <div class="ui-grid-col-2" style="text-align: right">
+                                <button pButton type="button" label="Agregar Colaborador" class="ui-button-raised ui-button-success" icon="pi pi-plus" (click)="newColaborador()"></button>
+                            </div>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width:24em">Nombre</th>
+                            <th style="width:16em">E-mail</th>
+                            <th style="width:16em">Celular</th>
+                            <th style="width:8em">Anexo</th>
+                            <th style="width:16em">Cargo</th>
+                            <th style="width:8em"></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-contact let-editing="editing" let-ri="rowIndex">
+                        <tr [pEditableRow]="contact" *ngIf="contact.est_reg !== 'E'">
+                            <td pEditableColumn style="width:24em">
+                                <span _ngcontent-qmg-c2="" class="ui-column-title">Nombre:</span>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input pInputText type="text" [(ngModel)]="contact.nom_prov_col" placeholder="Requerido"
+                                        pattern="[a-zA-Z0-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{0,100}">
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{contact.nom_prov_col}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td pEditableColumn style="width:16em">
+                                <span _ngcontent-qmg-c2="" class="ui-column-title">E-mail:</span>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input pInputText type="text" [(ngModel)]="contact.ema_prov_col" placeholder="ejemplo@ejemplo.com" [pKeyFilter]="blockSpace"
+                                        pattern="[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]{2,69}@[A-Za-z0-9]{2,20}(?:\.[a-zA-Z0-9-.]{1,9})" required/>
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{contact.ema_prov_col}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td pEditableColumn style="width:16em">
+                                <span _ngcontent-qmg-c2="" class="ui-column-title">Celular:</span>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <p-inputMask mask="999999999" [(ngModel)]="contact.tel_prov_col"></p-inputMask>
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{contact.tel_prov_col}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td pEditableColumn style="width:8em">
+                                <span _ngcontent-qmg-c2="" class="ui-column-title">Anexo:</span>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input pInputText type="text" [(ngModel)]="contact.ane_prov_col" pattern="[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]{0,8}">
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{contact.ane_prov_col}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td pEditableColumn style="width:16em">
+                                <span _ngcontent-qmg-c2="" class="ui-column-title">Cargo:</span>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input pInputText type="text" [(ngModel)]="contact.car_prov_col"
+                                        pattern="[a-zA-Z0-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{0,50}">
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{contact.car_prov_col}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td  style="width:8em; text-align:center">
+                                <button pButton type="button" icon="pi pi-trash" class="ui-button-info" (click)="deleteColaborador(contact)"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>      <!--funciona-->
+
+
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+        <div class="ui-grid-row">
+            <div class="card shadow">
+                <p-table [value]="bancos" dataKey="id_prov_ban" editMode="row" [scrollable]="true" scrollHeight="190px" [responsive]="true"
+                    autoLayout="true" [style]="{maxWidth: '1500px', minHeight: '260px'}">
+                    <ng-template pTemplate="caption">
+                        <div class="ui-grid-row justify-content-center align-items-center">
+                            <div class="ui-grid-col-4">
+                                <label class="mx-2">Cuentas</label>
+                            </div>
+                            <div class="ui-grid-col-6" style="text-align: right" >
+                                
+                            </div>
+                            <div class="ui-grid-col-2" style="text-align: right">
+                                <button pButton type="button" label="Agregar Cuentas" class="ui-button-raised ui-button-success" icon="pi pi-plus" (click)="newBanco()"></button>
+                            </div>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width:16em">Tipo Cuenta</th>
+                            <th style="width:16em">N° Cuenta</th>
+                            <th style="width:16em">Nombre Banco</th>
+                            <th style="width:24em">Comentario Cuenta</th>
+                            <th style="width:8em"></th>
+                          <!--  <th style="width:16em">Cargo</th>
+                            <th style="width:8em"></th> -->
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-bancc let-editing="editing" let-ri="rowIndex">
+                        <tr [pEditableRow]="bancc" *ngIf="bancc.est_reg !== 'E'">
+                            <td pEditableColumn style="width:16em">
+                                <span _ngcontent-qmg-c2="" class="ui-column-title">Tipo Cuenta:</span>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input pInputText type="text" [(ngModel)]="bancc.tip_prov_ban" placeholder="Requerido"
+                                        pattern="[a-zA-Z0-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{0,100}">
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{bancc.tip_prov_ban}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td pEditableColumn style="width:16em">
+                                <span _ngcontent-qmg-c2="" class="ui-column-title">N° Cuenta:</span>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input pInputText type="text" [(ngModel)]="bancc.cue_prov_ban" placeholder="Requerido" pattern="[0-9-]{9,200}" pKeyFilter="int">
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{bancc.cue_prov_ban}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td pEditableColumn style="width:16em">
+                                <span _ngcontent-qmg-c2="" class="ui-column-title">Nombre Banco:</span>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input pInputText type="text" [(ngModel)]="bancc.ban_prov_ban" 
+                                        pattern="[a-zA-Z0-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{0,200}">
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{bancc.ban_prov_ban}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td pEditableColumn style="width:24em">
+                                <span _ngcontent-qmg-c2="" class="ui-column-title">Comentario Cuenta:</span>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input pInputText type="text" [(ngModel)]="bancc.com_prov_ban"
+                                        pattern="[a-zA-Z0-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{0,200}">
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{bancc.com_prov_ban}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td  style="width:8em; text-align:center">
+                                <button pButton type="button" icon="pi pi-trash" class="ui-button-info" (click)="deleteBanco(bancc)"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+<!--funciona (puede ser)-->
+	<!--End Body-->
+	<p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showbar"></p-progressBar>
+	<p-footer>
+		<button type="button" pButton icon="pi pi-save" (click)="submitAdmin()" [label]="submitLabel"
+			class="ui-button-primary"></button>
+		<button type="button" pButton icon="pi pi-times" (click)="cancelAdmin()" label="Cancelar"
+			class="ui-button-danger"></button>
+	</p-footer>
+</p-dialog>
+
+<p-dialog [header]="titlePanelDir" [(visible)]="displayModalDir" [modal]="true"
+    [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '60vh','min-height':'250px'}"
+    [baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelDir()">
+    <div class="card shadow">
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <p>Ciudad: *</p>
+                </div>
+                <div class="ui-grid-col-8">
+                    <input pInputText type="text" [(ngModel)]="ciu_prov" placeholder="Requerido" class="ng-dirty ng-invalid"
+                    pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{0,50}"/>
+                    <p-message severity="error" text="Ciudad requerida"
+                        *ngIf="submitDir && !validCiudad">
+                    </p-message>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <p>Dirección:*</p>
+                </div>
+                <div class="ui-grid-col-8">
+                    <input pInputText type="text" [(ngModel)]="dir_prov" placeholder="Requerido" class="ng-dirty ng-invalid"
+                    pattern="[a-zA-Z0-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,./'-]{0,200}"/>
+                    <p-message severity="error" text="Dirección requerida"
+                        *ngIf="submitDir && !validDireccion">
+                    </p-message>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <p>Teléfono:</p>
+                </div>
+                <div class="ui-grid-col-8">
+                    <input pInputText type="text" [(ngModel)]="tel_prov" placeholder="999-999999" pattern="[0-9]{1,3}-[0-9]{5,6}" pKeyFilter="int"/>
+                </div>
+            </div>
+            <br>
+            <div class="ui-grid-row" >
+                <button type="button" pButton icon="pi pi-save" (click)="agregarDireccion()" [label]="addLabelAdmin"
+                    class="ui-button-primary"></button>
+            </div>
+        </div>
+    </div>
+</p-dialog>
+
+<p-dialog [header]="titlePanelCol" [(visible)]="displayModalCol" [modal]="true"
+    [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '60vh','min-height':'250px'}"
+    [baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelCol()">
+    <div class="card shadow">
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <p>Nombre: *</p>
+                </div>
+                <div class="ui-grid-col-8">
+                    <input pInputText type="text" [(ngModel)]="nom_prov_col" placeholder="Requerido" class="ng-dirty ng-invalid"
+                    pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{0,100}"/>
+                    <p-message severity="error" text="Nombre requerido"
+                        *ngIf="submitCol && !validNombre">
+                    </p-message>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <p>E-mail:</p>
+                </div>
+                <div class="ui-grid-col-8">
+                    <input pInputText type="text" [(ngModel)]="ema_prov_col" placeholder="ejemplo@ejemplo.com" [pKeyFilter]="blockSpace"
+                    pattern="[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]{2,69}@[A-Za-z0-9]{2,20}(?:\.[a-zA-Z0-9-.]{1,9})"/>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <p>Celular:</p>
+                </div>
+                <div class="ui-grid-col-8">
+                    <p-inputMask mask="999999999" [(ngModel)]="tel_prov_col"></p-inputMask>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <p>Anexo:</p>
+                </div>
+                <div class="ui-grid-col-8">
+                    <input pInputText type="text" [(ngModel)]="ane_prov_col" pattern="[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]{0,8}"/>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <p>Cargo:</p>
+                </div>
+                <div class="ui-grid-col-8">
+                    <input pInputText type="text" [(ngModel)]="car_prov_col"
+                    pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{0,50}"/>
+                </div>
+            </div>
+            <br>
+            <div class="ui-grid-row">
+                <button type="button" pButton icon="pi pi-save" (click)="agregarColaborador()" [label]="addLabelAdmin"
+                    class="ui-button-primary"></button>
+            </div>
+        </div>
+    </div>
+</p-dialog>
+
+<p-dialog [header]="titlePanelBan" [(visible)]="displayModalBan" [modal]="true"
+    [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '60vh','min-height':'250px'}"
+    [baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelBan()">
+    <div class="card shadow">
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <p>Tipo Cuenta:*</p>
+                </div>
+                <div class="ui-grid-col-8">
+                    <input pInputText type="text" [(ngModel)]="tip_prov_ban" placeholder="Requerido" class="ng-dirty ng-invalid"
+                    pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{0,100}"/>
+                    <p-message severity="error" text="Tipo cuenta requerido"
+                        *ngIf="submitBan && !validTipoBanco">
+                    </p-message>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <p>N° Cuenta:*</p>
+                </div>
+                <div class="ui-grid-col-8">
+                    <input pInputText type="text" [(ngModel)]="cue_prov_ban" placeholder="Requerido" pattern="[0-9-]{9,200}" pKeyFilter="int">
+                    <p-message severity="error" text="N° de cuenta requerido"
+                        *ngIf="submitBan && !validCuentaBanco">
+                    </p-message>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <p>Nombre Banco:</p>
+                </div>
+                <div class="ui-grid-col-8">
+                    <input pInputText type="text" [(ngModel)]="ban_prov_ban"
+                    pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{0,200}"/>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <p>Comentario:</p>
+                </div>
+                <div class="ui-grid-col-8">
+                    <input pInputText type="text" [(ngModel)]="com_prov_ban"
+                    pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{0,200}"/>
+                </div>
+            </div>
+            <br>
+            <div class="ui-grid-row">
+                <button type="button" pButton icon="pi pi-save" (click)="agregarBanco()" [label]="addLabelAdmin"
+                    class="ui-button-primary"></button>
+            </div>
+        </div>
+    </div>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '50vw'}" position="top" acceptLabel="Si" rejectLabel="No"  class="fixed-top"></p-confirmDialog>

@@ -1,0 +1,59 @@
+// :host ::ng-deep .ui-table .ui-table-caption {
+//     background-color: #355275;
+//     border-top: 2px solid #355275;
+//     border-right: 2px solid #355275;
+//     border-left: 2px solid #355275;
+//     color: #ffffff;
+//     text-align: left;
+// }
+:host ::ng-deep .ui-table .ui-table-caption {
+    text-align: left;
+}
+
+// :host ::ng-deep .ui-dropdown .ui-dropdown-panel {
+//     max-width: 0;
+// }
+
+.actions {
+    text-align: center;
+}
+
+
+:host ::ng-deep .ui-dropdown {
+    word-wrap: break-word;
+} 
+
+
+.readonly {
+    background-color:#EBEBEB !important;
+}
+
+.readonly-det {
+    background-color: #323232 !important;
+    color:#1FDA1A;
+    font-weight: bold;
+}
+
+.rojo {
+    background-color:#FF8686 !important;
+    color: black !important;
+}
+// :host ::ng-deep .ui-card {
+//     background-color: #355275;
+//     color: #ffffff;
+// }
+
+// :host ::ng-deep .ui-panel .ui-panel-titlebar {
+//     background-color: #355275;
+//     color: #ffffff;
+// }
+
+// .blue {
+//     color:#2583F4;
+// }
+// .orange {
+//     color:orange;
+// }
+// .green {
+//     color:green;
+// }

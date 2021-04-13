@@ -1,0 +1,196 @@
+<div class="card shadow">
+    <p-tabView>
+        <p-tabPanel header="Proformas Activas" leftIcon="pi pi-check">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-12">
+                    <p-table #dt [value]="proformasActivas" selectionMode="single" [(selection)]="selectedProformaActiva" styleClass="ui-table-customers"
+                    dataKey="id_pro" [loading]="loadingActivas" [totalRecords]="totalActivas" [rows]="rowsNumber" [paginator]="true"
+                    [responsive]="true" autoLayout="true" [globalFilterFields]="['id_pro','prof_fec','proyecto.nom_proy','cliente.razsoc_cli', 'cliente_direccion.ciu_cli']">
+                        <ng-template pTemplate="caption">
+                            <div class="row justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-md-4">
+                                    <label class="mx-2">Proformas Activas - Total: {{ totalActivas }}</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-4">
+                                    
+                                </div>
+                                <div class="ui-g-12 ui-md-4"  style="text-align: right">
+                                    <input type="text" pInputText placeholder="Busqueda" (input)="dt.filterGlobal($event.target.value, 'contains')">
+                                </div>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Codigo</th>
+                                <th>Fecha</th>                                
+                                <th>Usuario</th>
+                                <th>Proyecto</th>
+                                <th>Cliente</th>
+                                <th>Ciudad</th>
+                                <th>Estado</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-proforma>
+                            <tr [pSelectableRow]="proforma">
+                                <td style="width:10em">{{ ('PROFORMA-'+proforma.id_pro.toString().padStart(4,'0000') ) }}</td>                              
+                                <td style="width:8em">{{ proforma.prof_fec | date: 'yyyy-MM-dd' }}</td>                               
+                                <td>{{ (proforma.usuario) ? proforma.usuario.nom_col : 'Sin Usuario'}}</td>
+                                <td>{{ (proforma.proyecto) ? proforma.proyecto.nom_proy : 'Sin Proyecto' }}</td>                                
+                                <td>{{ proforma.cliente.razsoc_cli}}</td>
+                                <td>{{ (proforma.cliente_direccion) ? proforma.cliente_direccion.ciu_cli : 'sin ciudad'}}</td>
+                                <td [ngClass]="{'send': proforma.est_env === 1, 'nosend': proforma.est_env === 0}">
+                                    <span _ngcontent-qmg-c2="" class="ui-column-title">Envío:</span>
+                                    {{ (proforma.est_env === 1) ? 'Enviado' : 'No Enviado'}}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div class="ui-g-12" *ngIf="showbar">
+                    <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <button pButton type="button" label="Crear" class="ui-button-raised ui-button-icon ui-button-success"
+                        icon="pi pi-plus" (click)="crear()">
+                    </button>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <button pButton type="button" label="Editar" class="ui-button-raised ui-button-icon ui-button-warning"
+                        icon="pi pi-pencil" (click)="editProforma()"></button>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <button pButton type="button" label="Generar PDF Cliente" class="ui-button-raised ui-button-icon"
+                        icon="pi pi-file-pdf" (click)="generarPdfProformaActiva(1)" [disabled]="loadingPdf"></button>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <button pButton type="button" label="Generar PDF Usuario" class="ui-button-raised ui-button-icon ui-button-warning"
+                        icon="pi pi-file-pdf" (click)="generarPdfProformaActiva(2)" [disabled]="loadingPdf"></button>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <button pButton type="button" label="Enviar" class="ui-button-raised ui-button-icon"
+                        icon="pi pi-envelope" (click)="enviarCorreo()"></button>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <button pButton type="button" label="Anular" class="ui-button-raised ui-button-icon ui-button-danger"
+                        icon="pi pi-times" (click)="anular()"></button>
+                </div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel header="Proformas Anuladas" leftIcon="pi pi-times">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-12">
+                    <p-table #dta [value]="proformasAnuladas" selectionMode="single" [(selection)]="selectedProformaAnulada" styleClass="ui-table-customers"
+                    dataKey="id_pro" [loading]="loadingAnuladas" [totalRecords]="totalAnuladas" [rows]="rowsNumber" [paginator]="true"
+                    [responsive]="true" autoLayout="true" [globalFilterFields]="['id_pro','prof_fec','proyecto.nom_proy','cliente.razsoc_cli', 'cliente_direccion.ciu_cli']">
+                        <ng-template pTemplate="caption">
+                            <div class="row justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-md-4">
+                                    <label class="mx-2">Proformas Anuladas - Total: {{ totalAnuladas }}</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-4">
+                                    
+                                </div>
+                                <div class="ui-g-12 ui-md-4"  style="text-align: right">
+                                    <input type="text" pInputText placeholder="Busqueda" (input)="dta.filterGlobal($event.target.value, 'contains')">
+                                </div>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Codigo</th>
+                                <th>Fecha</th>                                
+                                <th>Usuario</th>
+                                <th>Proyecto</th>
+                                <th>Cliente</th>
+                                <th>Direccion</th>
+                                <th>Estado</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-proforma>
+                            <tr [pSelectableRow]="proforma">
+                                <td style="width:10em">{{ ('PROFORMA-'+proforma.id_pro.toString().padStart(4,'0000') ) }}</td>
+                                <td style="width:8em">{{ proforma.prof_fec | date: 'yyyy-MM-dd' }}</td>
+                                <td>{{ (proforma.usuario) ? proforma.usuario.nom_col : 'Sin Usuario'}}</td>
+                                <td>{{ (proforma.proyecto) ? proforma.proyecto.nom_proy : 'Sin Proyecto' }}</td>                                
+                                <td>{{ proforma.cliente.razsoc_cli}}</td>
+                                <td>{{ (proforma.cliente_direccion) ? proforma.cliente_direccion.ciu_cli : 'sin ciudad'}}</td>
+                                <td [ngClass]="{'send': proforma.est_env === 1, 'nosend': proforma.est_env === 0}">
+                                    <span _ngcontent-qmg-c2="" class="ui-column-title">Envío:</span>
+                                    {{ (proforma.est_env === 1) ? 'Enviado' : 'No Enviado'}}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div class="ui-g-12" *ngIf="showbar">
+                    <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <button pButton type="button" label="Generar PDF Cliente" class="ui-button-raised ui-button-icon"
+                        icon="pi pi-file-pdf" (click)="generarPdfProformaAnulada(1)" [disabled]="loadingPdf"></button>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <button pButton type="button" label="Generar PDF Usuario" class="ui-button-raised ui-button-icon"
+                        icon="pi pi-file-pdf" (click)="generarPdfProformaAnulada(2)" [disabled]="loadingPdf"></button>
+                </div>
+            </div>
+        </p-tabPanel>
+    </p-tabView>
+</div>
+
+<p-dialog header="Datos del Correo" [(visible)]="displayModalEnviar" [modal]="true"
+    [style]="{width: '32vw'}"
+    [baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelEnviar()">
+    <!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px" *ngIf="selectedProformaActiva">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Responsable:</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input type="text" pInputText [(ngModel)]="userName" placeholder="Usuario" readonly />
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Cliente:</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input type="text" pInputText value="{{ (selectedProformaActiva && selectedProformaActiva.cliente) ? selectedProformaActiva.cliente.razsoc_cli : '' }}" readonly />
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>E-mail:</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input type="text" pInputText value="{{ (selectedProformaActiva && selectedProformaActiva.cliente_contacto) ? selectedProformaActiva.cliente_contacto.ema_cli_con : selectedProformaActiva.cliente.ema_cli }}" readonly />
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Asunto:</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="asunto" value="asunto" />
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Mensaje:</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <textarea rows="5" cols="30" [(ngModel)]="mensaje" value="mensaje" pInputTextarea autoResize="autoResize"></textarea>
+            </div>
+        </div>
+    </div>
+    <!--End Body-->
+    <p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showbarEmail"></p-progressBar>
+    <p-footer>
+
+        <button pButton type="submit" icon="pi pi-check-circle" label="Enviar" (click)="enviarPDF()"></button>
+        <button pButton class="ui-button-danger" icon="pi pi-times" label="Cancelar"
+            (click)="cancelEnviar()"></button>
+    </p-footer>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '50vw'}" position="top" key="anularProforma" acceptLabel="Si" rejectLabel="No" baseZIndex="10001"></p-confirmDialog>
+

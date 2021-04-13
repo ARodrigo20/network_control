@@ -1,0 +1,215 @@
+<div class="card shadow">
+    <div class="ui-g ui-fluid">
+        
+        <div class="ui-g-12 ui-md-12">
+            <p-table #dt [value]="colaborador" selectionMode="single" [(selection)]="selectedColaborador"
+            dataKey="id_col" [loading]="loading" [totalRecords]="totalRegistros" [rows]="rowsNumber" [paginator]="true"
+            [responsive]="true" autoLayout="true" [globalFilterFields]="['cod_col','nom_col']">
+                <ng-template pTemplate="caption">
+                    <div class="row justify-content-center align-items-center">
+                        <div class="ui-g-12 ui-md-4">
+                            <label class="mx-2">Lista de Colaboradores - Total: {{totalRegistros}}</label>
+                        </div>
+                        <div class="ui-g-12 ui-md-4">
+                            
+                        </div>
+                        <div class="ui-g-12 ui-md-4"  style="text-align: right">
+                            <input type="text" pInputText placeholder="Busqueda por codigo, nombre o apellido" (input)="dt.filterGlobal($event.target.value, 'contains')">
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th>ID</th>
+                        <th>Codigo</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>E-mail</th>
+                        <th>Tipo Documento</th>
+                        <th>N. Documento</th>
+                        <th>N. Celular</th>
+                        <th>Cargo</th>
+                        <!--th>Stock</th>
+                        <th>Marca</th>
+                        <th>Modelo</th>
+                        <th>Fabricante</th>
+                        <th>Unidad</th> -->
+                        <!-- <th class="actions">Acciones</th> -->
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-colaborador>
+                    <tr [pSelectableRow]="colaborador">
+                        <td><strong> <span _ngcontent-qmg-c2="" class="ui-column-title">ID</span> {{ colaborador.id_col }} </strong></td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Codigo</span> {{ colaborador.cod_col }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Nombre</span> {{ colaborador.nom_col }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Apellido</span> {{ colaborador.ape_col }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">E-mail</span> {{ colaborador.email }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">TipoDoc</span> <span *ngIf="colaborador.tipo_documento">{{ colaborador.tipo_documento.des_tipdoc }}</span></td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">N. Doc</span> {{ colaborador.num_doc_col }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">N. Celular</span> {{ colaborador.cel_col }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Cargo</span> <span *ngIf="colaborador.cargo">{{ colaborador.cargo.des_car }}</span></td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <div class="ui-g-12 ui-md-4 ui-lg-2">
+            <button pButton type="button" label="Crear" class="ui-button-raised ui-button-icon ui-button-success"
+                icon="pi pi-plus" (click)="newColaborador()">
+            </button>
+        </div>
+        <div class="ui-g-12 ui-md-4 ui-lg-2">
+            <button pButton type="button" label="Modificar" class="ui-button-raised ui-button-icon ui-button-warning"
+                icon="pi pi-pencil" (click)="editColaborador()"></button>
+        </div>
+        <div class="ui-g-12 ui-md-4 ui-lg-2">
+            <button pButton type="button" label="Eliminar" class="ui-button-raised ui-button-icon ui-button-danger"
+                icon="pi pi-trash" (click)="deleteColaborador()"></button>
+        </div>
+    </div>
+</div>
+
+<p-confirmDialog [style]="{width: '50vw'}" position="top" acceptLabel="Si" rejectLabel="No"  class="fixed-top"></p-confirmDialog>
+
+<p-dialog [header]="titlePanel" [(visible)]="displayModal" [modal]="true"
+	[style]="{width: '60%', minHeight: '150px', 'max-height': '90vh'}"
+	[contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '60vh','min-height':'250px'}"
+	[baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancel()">
+	<!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+        
+        
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <p>Codigo *</p>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="cod_col" placeholder="Requerido" class="ng-dirty ng-invalid"/>
+            </div>
+            <div class="ui-grid-col-2">
+                <p-message severity="error" text="Codigo es requerido"
+                    *ngIf="submitted && !validCodCol">
+                </p-message>
+            </div>
+        </div>
+
+
+
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <p>Nombre: *</p>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="nom_col" placeholder="Requerido" class="ng-dirty ng-invalid"/>
+            </div>
+            <div class="ui-grid-col-2">
+                <p-message severity="error" text="Nombre es requerido"
+                    *ngIf="submitted && !validNomCol">
+                </p-message>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <p>Apellido *:</p>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="ape_col" placeholder="Requerido" />
+            </div>
+            <div class="ui-grid-col-2">
+                <p-message severity="error" text="Apellido es requerido"
+                    *ngIf="submitted && !validApeCol">
+                </p-message>
+            </div>
+        </div>
+
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <p>Email *:</p>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="email" placeholder="Requerido" />
+            </div>
+            <div class="ui-grid-col-2">
+                <p-message severity="error" text="Email es requerido"
+                    *ngIf="submitted && !validEmail">
+                </p-message>
+            </div>
+        </div>
+        
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <label for="id_tipdoc">TipoDoc: *</label>
+                <p-dropdown
+                    [options]="tipdoc"
+                    [(ngModel)]="selectedTipdoc" 
+                    filter="true"
+                    optionLabel="des_tipdoc"
+                    placeholder="Seleccione"
+                    showClear="true"
+                ></p-dropdown>
+                <p-message severity="error" text="TipoDocumento es requerido"
+                    *ngIf="submitted && !validTipDoc">
+                </p-message>
+            </div>
+
+            <div class="ui-grid-col-4">
+                <label for="num_doc_col">NumeroDocumento:</label>
+                <input pInputText type="text" [(ngModel)]="num_doc_col" placeholder="Requerido"/>
+                <p-message severity="error" text="NunDoc es requerido"
+                    *ngIf="submitted && !validNumDoc">
+                </p-message>
+            </div>
+
+          
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <label for="cel_col">N. Celular:</label>
+                <input pInputText type="text" [(ngModel)]="cel_col" placeholder="Requerido"/>
+            </div>
+
+            <div class="ui-grid-col-4">
+                <label for="id_car">Cargo: *</label>
+                <p-dropdown
+                    [options]="cargo"
+                    [(ngModel)]="selectedCargo"
+                    filter="true"
+                    optionLabel="des_car"
+                    placeholder="Seleccione"
+                    showClear="true"
+                ></p-dropdown>
+                <p-message severity="error" text="Cargo es requerido"
+                    *ngIf="submitted && !validCargo">
+                </p-message>
+            </div>
+            
+        </div>
+        <br>
+    </div>
+	<!--End Body-->
+	<p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showbar"></p-progressBar>
+	<p-footer>
+		
+		<button type="button" pButton icon="pi pi-save" (click)="submit()" [label]="submitLabel"
+			class="ui-button-primary"></button>
+		<button type="button" pButton icon="pi pi-times" (click)="cancel()" label="Cancelar"
+			class="ui-button-danger"></button>
+	</p-footer>
+</p-dialog>

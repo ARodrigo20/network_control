@@ -1,0 +1,233 @@
+
+<div class="card shadow">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+                <div class="ui-g-12">
+                    <p-panel header="Datos">
+                        <div class="ui-g ui-fluid" >
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>ORDEN DE COMPRA N°:</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <input
+                                    id="cod"
+                                    type="text"
+                                    pInputText
+                                    [(ngModel)]="codigo"
+                                    readonly
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Factura:</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <div #serie class="ui-g-12 ui-md-6 ui-lg-4">
+                                    <input
+                                        id="serFac"
+                                        type="text"
+                                        pInputText
+                                        [(ngModel)]="seriefac"
+                                        pKeyFilter="alphanum"
+                                        placeholder = "AB01"
+                                        maxlength = "4"
+                                        onkeyup = "javascript:this.value=this.value.toUpperCase();"
+                                    />
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-8">
+                                    <input
+                                        id="corrFac"
+                                        type="text"
+                                        pInputText
+                                        [(ngModel)]="factura"
+                                        placeholder="99999999"
+                                        pKeyFilter="int"
+                                        maxlength = "8"
+                                    />
+                                </div>
+                                <p-message severity="error" text="Complete el documento" *ngIf="submitted && !validFac">
+                                </p-message>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Proveedor:</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <input
+                                    id="prov"
+                                    type="text"
+                                    pInputText
+                                    [(ngModel)]="proveedor"
+                                    readonly
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Boleta:</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                    <input
+                                        id="serBol"
+                                        type="text"
+                                        pInputText
+                                        [(ngModel)]="seriebol"
+                                        pKeyFilter="alphanum"
+                                        maxlength = "4"
+                                        placeholder = "AB01"
+                                        onkeyup = "javascript:this.value=this.value.toUpperCase();"
+                                    />
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-8">
+                                    <input
+                                        id="corrBol"
+                                        type="text"
+                                        pInputText
+                                        [(ngModel)]="boleta"
+                                        placeholder="99999999"
+                                        pKeyFilter="int"
+                                        maxlength = "8"
+                                    />
+                                </div>
+                                <p-message severity="error" text="Complete el documento" *ngIf="submitted && !validBol">
+                                </p-message>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-6"></div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Guía de remisión:</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                    <input
+                                        id="serGui"
+                                        type="text"
+                                        pInputText
+                                        [(ngModel)]="seriegui"
+                                        pKeyFilter="alphanum"
+                                        maxlength = "4"
+                                        placeholder = "AB01"
+                                        onkeyup = "javascript:this.value=this.value.toUpperCase();"
+                                    />
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-8">
+                                    <input
+                                        id="corrGui"
+                                        type="text"
+                                        pInputText
+                                        [(ngModel)]="guiaRem"
+                                        placeholder="99999999"
+                                        pKeyFilter="int"
+                                        maxlength = "8"
+                                    />
+                                </div>
+                                <p-message severity="error" text="Complete el documento" *ngIf="submitted && !validGui">
+                                </p-message>
+                            </div>
+                        </div>
+                    </p-panel>
+                    <p-message severity="error" text="Se requiere por lo menos un n° de Comprobante"
+                        *ngIf="submitted && !validDocs">
+                    </p-message>
+                </div>
+                <div class="ui-g-12">
+                    <p-table [value]="ordenCompraDetalle" [responsive]="true" [scrollable]="true" [style]="{width:'100%'}">
+                        <ng-template pTemplate="caption">
+                            <div class="row justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-g-nopad mx-3">
+                                    Items *
+                                </div>  
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="colgroup" let-columns>
+                            <colgroup>
+                                <col style="width:14em">
+                                <col style="width:4em">
+                                <col style="width:3em">
+                                <col style="width:3em">
+                                <col style="width:3em">
+                                <col style="width:3em">
+                                <col style="width:4em">
+                                <col style="width:4em">
+                            </colgroup>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>DESCRIPCION</th>
+                                <th>N° PARTE</th>
+                                <th>UND. MED</th>
+                                <th>CANTIDAD</th>
+                                <th>INGRESO</th>
+                                <th>FALTANTE</th>
+                                <th>ESTADO</th>
+                                <th>FEC. LLEGADA</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-detalle>
+                            <tr id="det{{ detalle.id_ord_det }}">
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Descripción:</span>
+                                    {{ detalle.ord_com_det_des }}</td>
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">N° Parte:</span>
+                                    {{ detalle.ord_com_det_numpar }}</td>
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Unidad:</span>
+                                    {{ detalle.ord_com_det_unimed }}</td>
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Cantidad:</span>
+                                    {{ detalle.ord_com_det_can }}</td>
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Ingreso:</span>
+                                    <input id="ingCant" pKeyFilter="int" pInputText type="number" [(ngModel)]="detalle.ord_com_det_canent" [min]="0" [max]="detalle.ord_com_det_canfal">
+                                </td>
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Faltante:</span>
+                                    {{ detalle.ord_com_det_canfal - detalle.ord_com_det_canent }}</td>
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Estado:</span>
+                                    <p-dropdown
+                                        id="drpEst"
+                                        [options]="estados"
+                                        [(ngModel)]="detalle.estado_det"
+                                        showClear="true" 
+                                        optionLabel="label"
+                                        placeholder="Estado"
+                                        [style]="{'width':'100%','min-width':'100%'}"
+                                        appendTo="body"
+                                    ></p-dropdown>
+                                </td>
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Fecha de Llegada:</span>
+                                    <p-calendar
+                                        id="fec"
+                                        [showIcon]="true"
+                                        showButtonBar="true"
+                                        [(ngModel)]="detalle.ord_com_det_feclleg"
+                                        dateFormat="yy/mm/dd"
+                                        [monthNavigator]="true"
+                                        placeholder="yy/mm/dd"
+                                        [minDate]="fechaLleg"
+                                        [readonlyInput]="true"
+                                        appendTo="body"
+                                        required="true"
+                                    ></p-calendar>
+                                </td>                               
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="summary">
+                            <div class="ui-g ui-fluid justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-g-nopad mx-1 text-right">
+                                    Mostrando {{ ordenCompraDetalle.length }} items
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div class="ui-g-12" *ngIf="showbar">
+                    <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+                </div>
+                <div class="ui-g-12 ui-g-nopad">
+                    <div class="ui-g-12 ui-md-4 ui-lg-8"></div>
+                    <div class="ui-g-12 ui-md-4 ui-lg-2">
+                        <button id="submit" type="button" pButton icon="pi pi-check-square" (click)="submit()" label="Registrar Ingreso"
+                        class="ui-button-primary"></button>
+                    </div>
+                    <div class="ui-g-12 ui-md-4 ui-lg-2">
+                        <button id="cancel" type="button" pButton icon="pi pi-times" (click)="cancel()" label="Cancelar"
+                        class="ui-button-danger"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

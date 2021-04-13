@@ -1,0 +1,161 @@
+<div class="card shadow">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-12">
+            <p-table #dt [value]="kardex" styleClass="ui-table-customers" dataKey="id_kar"
+                [loading]="loadingKardex" [totalRecords]="totalKardex" [rows]="rowsNumber" [paginator]="true"
+                [responsive]="true" autoLayout="true" [scrollable]="true"
+                [globalFilterFields]="['fec_kar','cod_kar','prod_desc','fac_kar','bol_kar','guirem_kar']">
+                <ng-template pTemplate="caption">
+                    <div class="row justify-content-center align-items-center">
+                        <div class="ui-g-12 ui-md-4">
+                            <label class="mx-2">Kardex - Total: {{ totalKardex }}</label>
+                        </div>
+                        <div class="ui-g-12 ui-md-4">
+
+                        </div>
+                        <div class="ui-g-12 ui-md-4" style="text-align: right">
+                            <input type="text" pInputText placeholder="Busqueda por nombre o número"
+                                (input)="dt.filterGlobal($event.target.value, 'contains')">
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="colgroup" let-columns>
+                    <colgroup>
+                        <col style="width:80px">
+                        <col style="width:110px">
+                        <col style="width:300px">
+                        <col style="width:100px">
+                        <col style="width:60px">
+                        <col style="width:70px">
+                        <col style="width:100px">
+                        <col style="width:90px">
+                        <col style="width:90px">
+                        <col style="width:90px">
+                        <col style="width:90px">
+                        <col style="width:100px">
+                    </colgroup>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Código</th>
+                        <th>Descripción</th>
+                        <th>N° de Parte</th>
+                        <th>Uni. Med.</th>
+                        <th>Cantidad</th>
+                        <th>Proveedor / Cliente</th>
+                        <th>N° Factura</th>
+                        <th>N° Boleta</th>
+                        <th>N° Guía</th>
+                        <th>Tipo</th>
+                        <th>Colaborador</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-kardexJSON>
+                    <tr [pSelectableRow]="kardex">
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Fecha:</span>
+                            {{ kardexJSON.fec_kar | date: 'dd/MM/yyyy' }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Código:</span>
+                            {{ kardexJSON.cod_kar }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Descripción:</span>
+                            {{ kardexJSON.prod_desc }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">N° Parte:</span>
+                            {{ kardexJSON.prod_numpar }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Uni. Med.:</span>
+                            {{ kardexJSON.prod_unimed }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Cantidad:</span>
+                            {{ kardexJSON.prod_cant }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Prov/Cli:</span>
+                            {{ kardexJSON.prov_razsoc }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">N° Factura:</span>
+                            {{ kardexJSON.fac_kar }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">N° Boleta:</span>
+                            {{ kardexJSON.bol_kar }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">N° Guía:</span>
+                            {{ kardexJSON.guirem_kar }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Tipo:</span>
+                            {{ (kardexJSON.tip_kar === 1) ? 'Ingreso' : 'Salida' }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Colaborador:</span>
+                            {{ kardexJSON.col_usu }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <div class="ui-g-12" *ngIf="showbar">
+            <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+        </div>
+        <div class="ui-g-12 ui-md-4 ui-lg-2">
+            <button id="export" pButton type="button" label="Exportar"
+                class="ui-button-raised ui-button-icon ui-button-secondary" icon="pi pi-file-o" (click)="filtrar()">
+            </button>
+        </div>
+    </div>
+</div>
+
+<p-dialog header="Filtro del Documento" [(visible)]="displayModalFiltro" [modal]="true"
+    [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '40vh','min-height':'350px'}"
+    [baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelFiltro()">
+    <!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Filtro:</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <p-dropdown
+                    id="drpFil"
+                    [options]="filtro"
+                    [(ngModel)]="selectedFiltro"
+                    optionLabel="label"
+                    placeholder="Seleccione"
+                    showClear="true"
+                    (onChange) = "onChangeFiltro()"
+                ></p-dropdown>
+                <p-message severity="error" text="Seleccione" *ngIf="submitF && !selectedFiltro"></p-message>
+            </div>
+        </div>
+        <div class="ui-grid-row" *ngIf="selectedFiltro && filtroM">
+            <div class="ui-grid-col-4">
+                <p>Mes:</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <p-dropdown
+                    id="fecM"
+                    [options]="meses"
+                    [(ngModel)]="selectedMes"
+                    optionLabel="label"
+                    placeholder="Seleccione"
+                    showClear="true"
+                ></p-dropdown>
+                <p-message severity="error" text="Seleccione" *ngIf="submitF && !selectedMes"></p-message>
+            </div>
+        </div>
+        <div class="ui-grid-row" *ngIf="selectedFiltro && filtroY">
+            <div class="ui-grid-col-4">
+                <p>Año:</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <p-dropdown
+                    id="fecY"
+                    [options]="year"
+                    [(ngModel)]="selectedYear"
+                    optionLabel="label"
+                    placeholder="Seleccione"
+                    showClear="true"
+                ></p-dropdown>
+                <p-message severity="error" text="Seleccione" *ngIf="submitF && !selectedYear"></p-message>
+            </div>
+        </div>
+    </div>
+    <!--End Body-->
+    <p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showbarEmail"></p-progressBar>
+    <p-footer>
+        <button id="expPDF" pButton type="button" label="Generar PDF"
+            class="ui-button-raised ui-button-icon ui-button-warning" icon="pi pi-file-pdf" pTooltip="PDF" (click)="generarPdfKardex()">
+        </button>
+        <button id="expXLS" pButton type="button" label="Generar Excel"
+            class="ui-button-raised ui-button-icon ui-button-success" icon="pi pi-file-excel" pTooltip="XLS" (click)="exportExcel()">
+        </button>
+        <button id="cancel" pButton class="ui-button-danger" icon="pi pi-times" label="Cancelar" (click)="cancelFiltro()"></button>
+    </p-footer>
+</p-dialog>

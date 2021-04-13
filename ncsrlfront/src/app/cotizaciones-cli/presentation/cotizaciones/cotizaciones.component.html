@@ -1,0 +1,138 @@
+<div class="card shadow">
+    <p-tabView>
+        <p-tabPanel header="Cotizaciones Activas" leftIcon="pi pi-check">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-12">
+                    <p-table #dt [value]="cotizacionesActivas" selectionMode="single" [(selection)]="selectedCotizacionActiva" styleClass="ui-table-customers"
+                    dataKey="solcli_id" [loading]="loadingActivas" [totalRecords]="totalActivas" [rows]="rowsNumber" [paginator]="true"
+                    [responsive]="true" autoLayout="true" [globalFilterFields]="['solcli_fec','solcli_cod','solcli_proy_nom','solcli_cli_nom']">
+                        <ng-template pTemplate="caption">
+                            <div class="row justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-md-4">
+                                    <label class="mx-2">Cotizaciones Activas - Total: {{ totalActivas }}</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-4">
+                                    
+                                </div>
+                                <div class="ui-g-12 ui-md-4"  style="text-align: right">
+                                    <input type="text" pInputText placeholder="Busqueda" (input)="dt.filterGlobal($event.target.value, 'contains')">
+                                </div>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Codigo</th>
+                                <th>Proyecto</th>
+                                <th>Cliente</th>
+                                <th>Direccion</th>
+                                <th>Contacto</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-cotizacion>
+                            <tr [pSelectableRow]="cotizacion">
+                                <td style="width:8em">{{ cotizacion.solcli_fec | date: 'yyyy-MM-dd' }}</td>
+                                <td>{{ cotizacion.solcli_cod }}</td>
+                                <td>{{ (cotizacion.solcli_proy_nom) ? cotizacion.solcli_proy_nom : 'Sin Proyecto' }}</td>
+                                <td>{{ cotizacion.solcli_cli_nom }}</td>
+                                <td>{{ (cotizacion.solcli_cli_dir) ? cotizacion.solcli_cli_dir : 'Sin Direccion'}}</td>
+                                <td>{{ (cotizacion.solcli_cli_con) ? cotizacion.solcli_cli_con : 'Sin Contacto' }}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div class="ui-g-12" *ngIf="showbar">
+                    <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <button pButton type="button" label="Crear" class="ui-button-raised ui-button-icon ui-button-success"
+                        icon="pi pi-plus" (click)="crear()">
+                    </button>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <button pButton type="button" label="Generar PDF" class="ui-button-raised ui-button-icon"
+                        icon="pi pi-file-pdf" (click)="generarPdfCotizacionActiva()" [disabled]="loadingPdf"></button>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <button pButton type="button" label="Anular" class="ui-button-raised ui-button-icon ui-button-danger"
+                        icon="pi pi-times" (click)="anular()"></button>
+                </div>
+                <!-- <div class="ui-g-12 ui-md-4 ui-lg-2"></div> -->
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <button pButton type="button" label="Cotizar Proveedor" class="ui-button-raised ui-button-icon ui-button-success"
+                        icon="pi pi-plus" (click)="cotizarProveedor()">
+                    </button>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <button pButton type="button" label="Generar Proforma" class="ui-button-raised ui-button-icon ui-button-warning"
+                        icon="pi pi-file-o" (click)="cotizarProforma()">
+                    </button>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <button pButton type="button" label="Editar" class="ui-button-raised ui-button-icon ui-button-warning"
+                        icon="pi pi-pencil" (click)="editar()">
+                    </button>
+                </div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel header="Cotizaciones Anuladas" leftIcon="pi pi-times">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-12">
+                    <p-table #dta [value]="cotizacionesAnuladas" selectionMode="single" [(selection)]="selectedCotizacionAnulada" styleClass="ui-table-customers"
+                    dataKey="solcli_id" [loading]="loadingAnuladas" [totalRecords]="totalAnuladas" [rows]="rowsNumber" [paginator]="true"
+                    [responsive]="true" autoLayout="true" [globalFilterFields]="['solcli_fec','solcli_cod','solcli_proy_nom','solcli_cli_nom']">
+                        <ng-template pTemplate="caption">
+                            <div class="row justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-md-4">
+                                    <label class="mx-2">Cotizaciones Anuladas - Total: {{ totalAnuladas }}</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-4">
+                                    
+                                </div>
+                                <div class="ui-g-12 ui-md-4"  style="text-align: right">
+                                    <input type="text" pInputText placeholder="Busqueda" (input)="dta.filterGlobal($event.target.value, 'contains')">
+                                </div>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Codigo</th>
+                                <th>Proyecto</th>
+                                <th>Cliente</th>
+                                <th>Direccion</th>
+                                <th>Contacto</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-cotizacion>
+                            <tr [pSelectableRow]="cotizacion">
+                                <td style="width:8em">{{ cotizacion.solcli_fec | date: 'yyyy-MM-dd' }}</td>
+                                <td>{{ cotizacion.solcli_cod }}</td>
+                                <td>{{ (cotizacion.solcli_proy_nom) ? cotizacion.solcli_proy_nom : 'Sin Proyecto' }}</td>
+                                <td>{{ cotizacion.solcli_cli_nom }}</td>
+                                <td>{{ (cotizacion.solcli_cli_dir) ? cotizacion.solcli_cli_dir : 'Sin Direccion'}}</td>
+                                <td>{{ (cotizacion.solcli_cli_con) ? cotizacion.solcli_cli_con : 'Sin Contacto' }}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div class="ui-g-12" *ngIf="showbar">
+                    <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-3">
+                    <button pButton type="button" label="Generar PDF" class="ui-button-raised ui-button-icon"
+                        icon="pi pi-file-pdf" (click)="generarPdfCotizacionAnulada()" [disabled]="loadingPdf"></button>
+                </div>
+            </div>
+        </p-tabPanel>
+    </p-tabView>
+
+    <!-- <embed [src]="pdfSrc" width="100%" height="500"> -->
+    <!-- <pdf-viewer [src]="pdfSrc" 
+              [render-text]="true"
+              style="display: block;"
+  ></pdf-viewer> -->
+  <!-- <iframe width="800" height="500" [src]="pdfSrc" type="application/pdf"></iframe> -->
+</div>
+
+<p-confirmDialog [style]="{width: '50vw'}" position="top" key="anularCotizacion" acceptLabel="Si" rejectLabel="No" baseZIndex="10001"></p-confirmDialog>

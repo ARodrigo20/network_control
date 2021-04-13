@@ -1,0 +1,352 @@
+<div class="card shadow">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+                <div class="ui-g-12">
+                    <p-panel header="Datos">
+                        <div class="ui-g ui-fluid ">
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Fecha</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    value="{{ fecha | date: 'dd/MM/yyyy'}}"
+                                    placeholder="fecha"
+                                    readonly
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label>Usuario</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    [(ngModel)]="userName"
+                                    placeholder="Usuario"
+                                    readonly
+                                />
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-8">
+                                <label>Proyecto</label>
+                                <p-dropdown
+                                    [options]="proyectos"
+                                    [(ngModel)]="selectedProyecto" 
+                                    optionLabel="nom_proy"
+                                    placeholder="Seleccione"
+                                    showClear="true"
+                                    filter="true"
+                                ></p-dropdown>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <label>Cliente *</label>
+                                <p-dropdown
+                                    [options]="clientes"
+                                    [(ngModel)]="selectedCliente" 
+                                    optionLabel="razsoc_cli"
+                                    placeholder="Seleccione"
+                                    showClear="true"
+                                    filter="true"
+                                    (onChange)="onChangeCliente($event)"
+                                ></p-dropdown>
+                                <p-message severity="error" text="Cliente requerido"
+                                    *ngIf="submitted && !validCliente">
+                                </p-message>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-8">
+                                <label>Contacto</label>
+                                <div class="ui-inputgroup">
+                                    <div class="ui-g-8 ui-md-9 ui-g-nopad">
+                                        <p-dropdown
+                                            [options]="contactos"
+                                            [(ngModel)]="selectedContacto" 
+                                            optionLabel="nom_cli_con"
+                                            placeholder="{{ (selectedCliente) ? 'Seleccione' : 'Depende de Cliente' }}"
+                                            showClear="true"
+                                        ></p-dropdown>
+                                    </div>
+                                    <div class="ui-g-4 ui-md-3 ui-g-nopad">
+                                        <button pButton type="button" label="nuevo" class="ui-button-raised ui-button-icon ui-button-success d-g-none" style="width: 100%"
+                                            icon="pi pi-plus" (click)="nuevoContacto()">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-12">
+                                <label>Direccion</label>
+                                <div class="ui-inputgroup">
+                                    <div class="ui-g-8 ui-md-10 ui-g-nopad">
+                                        <p-dropdown
+                                            [options]="direcciones"
+                                            [(ngModel)]="selectedDireccion" 
+                                            optionLabel="dir_cli"
+                                            placeholder="{{ (selectedCliente) ? 'Seleccione' : 'Depende de Cliente' }}"
+                                            showClear="true"
+                                        ></p-dropdown>
+                                    </div>
+                                    <div class="ui-g-4 ui-md-2 ui-g-nopad">
+                                        <button pButton type="button" label="nuevo" class="ui-button-raised ui-button-icon ui-button-success d-g-none" style="width: 100%"
+                                            icon="pi pi-plus" (click)="nuevaDireccion()">
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- <p-dropdown
+                                    [options]="direcciones"
+                                    [(ngModel)]="selectedDireccion" 
+                                    optionLabel="dir_cli"
+                                    placeholder="{{ (selectedCliente) ? 'Seleccione' : 'Depende de Cliente' }}"
+                                    showClear="true"
+                                ></p-dropdown> -->
+                            </div>
+                            
+                        </div>
+                    </p-panel>
+                </div>
+                <div class="ui-g-12">
+                    <p-panel header="Producto/Servicio">
+                        <div class="ui-g ui-fluid ">
+                            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                                <label>Tipo</label>
+                                <p-dropdown
+                                    [options]="tiposDetalle"
+                                    [(ngModel)]="selectedTipoDetalle" 
+                                    optionLabel="label"
+                                    placeholder="Seleccione"
+                                ></p-dropdown>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-8" *ngIf="selectedTipoDetalle && (selectedTipoDetalle.value === 1)">
+                                <label>Descripcion *</label>
+                                <p-dropdown
+                                    [options]="productos"
+                                    [(ngModel)]="selectedProducto" 
+                                    optionLabel="des_prod"
+                                    placeholder="Seleccione"
+                                    showClear="true"
+                                    filter="true"
+                                ></p-dropdown>
+                                <p-message severity="error" text="Campo requerido"
+                                    *ngIf="submittedPS && !validProducto">
+                                </p-message>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-4 d-g-none" *ngIf="selectedTipoDetalle && (selectedTipoDetalle.value === 1)">
+                                <label>Cantidad *</label>
+                                <input
+                                    type="number"
+                                    pInputText
+                                    [(ngModel)]="cantidad"
+                                    placeholder="cantidad"
+                                />
+                                <p-message severity="error" text="Campo requerido y mayor a 0"
+                                    *ngIf="submittedPS && !validCantidad">
+                                </p-message>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-6 d-g-none" *ngIf="selectedTipoDetalle && (selectedTipoDetalle.value === 1)">
+                                <!-- <label>Stock *</label>
+                                <input
+                                    type="number"
+                                    pInputText
+                                    [(ngModel)]="stock"
+                                    placeholder="stock"
+                                />
+                                <p-message severity="error" text="Campo requerido y mayor a 0"
+                                    *ngIf="submittedPS && !validStock">
+                                </p-message> -->
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-8" *ngIf="selectedTipoDetalle && (selectedTipoDetalle.value === 2)">
+                                <label>Descripcion *</label>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    [(ngModel)]="servicio"
+                                    placeholder="Descripcion"
+                                />
+                                <p-message severity="error" text="Campo requerido"
+                                    *ngIf="submittedPS && !validServicio">
+                                </p-message>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2 d-g-none" *ngIf="selectedTipoDetalle && (selectedTipoDetalle.value === 2)"></div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-8 d-g-none" *ngIf="selectedTipoDetalle && (selectedTipoDetalle.value === 2)"></div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                                <label  style="color: #00000000;" *ngIf="selectedTipoDetalle && (selectedTipoDetalle.value === 1)">Agregar</label>
+                                <button pButton type="button" label="Agregar" class="ui-button-raised ui-button-icon ui-button-success d-g-none"
+                                    icon="pi pi-check" (click)="addDetalle()">
+                                </button>
+                            </div>
+                        </div>
+                    </p-panel>
+                </div>
+                <div class="ui-g-12">
+                    <p-table [value]="cotizacionDetalle" dataKey="solclidet_id"
+                    [responsive]="true" autoLayout="true">
+                        <ng-template pTemplate="caption">
+                            <div class="row justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-g-nopad mx-3">
+                                    Items *
+                                </div>  
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th style="width:10em">Tipo</th>
+                                <th style="width:5em">Cantidad</th>
+                                <th>Descripcion</th>
+                                <!-- <th style="width:5em">Stock</th> -->
+                                <th style="width:10em">Accion</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-detalle >
+                            <tr *ngIf="detalle.est_reg !== 'E'">
+                                <td>{{ (detalle.solclidet_prod_serv === 1) ? 'Producto' : 'Servicio' }}</td>
+                              <!--  <td class="text-right">{{  (detalle.solclidet_prod_serv === 2) ? '---' : pInputText type="number" [(ngModel)]="detalle.solclidet_prod_can" }}</td> -->
+                                <td>
+                                    <input *ngIf="detalle.solclidet_prod_serv === 1" pInputText type="number" [(ngModel)]="detalle.solclidet_prod_can">
+                                </td>
+                              
+                                <td >{{ detalle.solclidet_des }}</td>
+                                <!-- <td class="text-right">{{ (detalle.solclidet_prod_serv === 2) ? '---' : detalle.solclidet_prod_stock }}</td> -->
+                                <td class="text-center">
+                                    <button  pButton type="button" class="ui-button-raised ui-button-icon ui-button-danger"
+                                        icon="pi pi-trash" (click)="deleteDetalle(detalle)" >
+                                    </button> 
+                                                                
+                                    
+                                </td>
+                                
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="summary">
+                            <div class="ui-g ui-fluid justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-g-nopad mx-1 text-right">
+                                    Mostrando {{cotizacionDetalle.length}} items
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-table>
+                    <p-message severity="error" text="Se requiere por lo menos un item"
+                        *ngIf="submitted && !validItems">
+                    </p-message>
+                </div>
+                <div class="ui-g-12" *ngIf="showbar">
+                    <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+                </div>
+                <div class="ui-g-12 ui-g-nopad">
+                    <div class="ui-g-12 ui-md-4 ui-lg-8"></div>
+                    <div class="ui-g-12 ui-md-4 ui-lg-2">
+                        <button type="button" pButton icon="pi pi-save" (click)="submittt()" label="Guardar"
+                        class="ui-button-primary"></button>
+                    </div>
+                   
+                    <div class="ui-g-12 ui-md-4 ui-lg-2">
+                        <button type="button" pButton icon="pi pi-times" (click)="cancel()" label="Cancelar"
+                        class="ui-button-danger"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-dialog header="Registrar Direccion" [(visible)]="displayModalDireccion" [modal]="true"
+	[contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '40vh','min-height':'100px'}"
+	[baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelDireccion()">
+	<!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Ciudad: *</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="ciu_cli" placeholder="Requerido" class="ng-dirty ng-invalid"
+                pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{0,50}"/>
+                <p-message severity="error" text="Ciudad requerida"
+                    *ngIf="submitDir && !validCiudad">
+                </p-message>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Dirección:*</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="dir_cli" placeholder="Requerido" class="ng-dirty ng-invalid"
+                pattern="[a-zA-Z0-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{0,200}"/>
+                <p-message severity="error" text="Dirección requerida"
+                    *ngIf="submitDir && !validDireccion">
+                </p-message>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Teléfono:</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="tel_cli" placeholder="999-999999" maxlength="10" pKeyFilter="int"/>
+            </div>
+        </div>
+    </div>
+	<!--End Body-->
+	<p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showBarDir"></p-progressBar>
+	<p-footer>
+		
+		<button pButton type="submit" icon="pi pi-save" label="Guardar" (click)="agregarDireccion()"></button>
+		<button pButton class="ui-button-danger" icon="pi pi-times" label="Cancelar" (click)="cancelDireccion()"></button>
+	</p-footer>
+</p-dialog>
+
+<p-dialog header="Registrar Contacto" [(visible)]="displayModalContacto" [modal]="true"
+	[contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '40vh','min-height':'100px'}"
+	[baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelContacto()">
+	<!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Nombre: *</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="nom_cli_con" placeholder="Requerido" class="ng-dirty ng-invalid"/>
+                <p-message severity="error" text="Nombre requerido"
+                    *ngIf="submitCon && !validNombre">
+                </p-message>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>E-mail:</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="ema_cli_con" placeholder="ejemplo@ejemplo.com"/>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Celular:</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="cel_cli_con" placeholder="999999999" maxlength="9" pKeyFilter="int"/>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Anexo:</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="ane_cli_con"/>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p>Cargo:</p>
+            </div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="car_cli_con"/>
+            </div>
+        </div>
+    </div>
+	<!--End Body-->
+	<p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showBarCon"></p-progressBar>
+	<p-footer>
+		
+		<button pButton type="submit" icon="pi pi-save" label="Guardar" (click)="agregarContacto()"></button>
+		<button pButton class="ui-button-danger" icon="pi pi-times" label="Cancelar" (click)="cancelContacto()"></button>
+	</p-footer>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '50vw'}" position="top" key="deleteDetalle" acceptLabel="Si" rejectLabel="No" baseZIndex="10001"></p-confirmDialog>

@@ -1,0 +1,358 @@
+<div class="card shadow">
+    <div class="ui-g ui-fluid">
+        
+        <div class="ui-g-12 ui-md-12">
+            <p-table #dt [value]="productos" selectionMode="single" [(selection)]="selectedProducto" styleClass="ui-table-customers"
+            dataKey="id_prod" [loading]="loading" [totalRecords]="totalRegistros" [rows]="rowsNumber" [paginator]="true" [rowsPerPageOptions]="[10,25,50,100, { showAll: 'Todo' }]"
+            [responsive]="true" autoLayout="true" [globalFilterFields]="['num_parte_prod','des_prod','cod_prod','pre_com_prod', 'marca.des_mar','modelo.des_mod','fabricante.des_fab','unidad_medida.nom_unimed']">
+                <ng-template pTemplate="caption">
+                    <div class="row justify-content-center align-items-center">
+                        <div class="ui-g-12 ui-md-4">
+                            <label class="mx-2">Productos en almacén - Total: {{totalRegistros}}</label>
+                        </div>
+                        <div class="ui-g-12 ui-md-4">
+                            
+                        </div>
+                        <div class="ui-g-12 ui-md-4"  style="text-align: right">
+                            <input type="text" pInputText placeholder="Busqueda" (input)="dt.filterGlobal($event.target.value, 'contains')">
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th>ID</th>
+                        <th>Código</th>
+                        <th>Número de Parte</th>
+                        <th>Descripción</th>
+                        <th style="width:8em">P. Compra</th>
+                        <th>Stock</th>
+                        <th>Marca</th>
+                        <th>Modelo</th>
+                        <th>Fabricante</th>
+                        <th>Und</th>
+                        <!-- <th>Moneda</th> -->
+                        <!-- <th class="actions">Acciones</th> -->
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-producto>
+                    <tr [pSelectableRow]="producto" _ngcontent-qmg-c2="">
+                        <td _ngcontent-qmg-c2=""><strong> <span _ngcontent-qmg-c2="" class="ui-column-title">ID</span> {{ producto.id_prod }} </strong></td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Código</span> {{ producto.cod_prod }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">N. Parte</span> {{ producto.num_parte_prod }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Descripción</span> {{ producto.des_prod }}</td>
+                        <!-- <td> <span _ngcontent-qmg-c2="" class="ui-column-title">P. Compra</span> <span *ngIf="producto.mon_prod" class="text-left"> {{ (producto.mon_prod === 1) ? 'S/' : '$' }} </span> <span class="text-right"> {{ producto.pre_com_prod }} </span></td> -->
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">P. Compra</span>
+                            <div class="ui-g ui-fluid"> 
+                                <div class="ui-g-3 ui-g-nopad text-left"><span *ngIf="producto.mon_prod"><strong>{{ (producto.mon_prod === 1) ? 'S/' : '$' }}</strong></span></div> 
+                                <div class="ui-g-9 ui-g-nopad text-right">{{ producto.pre_com_prod | number : '1.2-2' }}</div> 
+                            </div>
+                        </td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Stock</span> {{ producto.stk_prod }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Marca</span> <span *ngIf="producto.marca">{{ producto.marca.des_mar }}</span></td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Modelo</span> <span *ngIf="producto.modelo">{{ producto.modelo.des_mod }}</span></td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Fabricante</span> <span *ngIf="producto.fabricante">{{ producto.fabricante.des_fab }}</span></td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Und</span> <span *ngIf="producto.unidad_medida">{{ producto.unidad_medida.nom_unimed }}</span></td>
+                        <!-- <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Moneda</span> <span *ngIf="producto.mon_prod">{{ (producto.mon_prod === 1) ? 'SOL' : 'DOLAR' }}</span></td> -->
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <div class="ui-g-12 ui-md-4 ui-lg-2">
+            <button pButton type="button" label="Crear" class="ui-button-raised ui-button-icon ui-button-success"
+                icon="pi pi-plus" (click)="newProduct()">
+            </button>
+        </div>
+        <div class="ui-g-12 ui-md-4 ui-lg-2">
+            <button pButton type="button" label="Modificar" class="ui-button-raised ui-button-icon ui-button-warning"
+                icon="pi pi-pencil" (click)="editProduct()"></button>
+        </div>
+        <div class="ui-g-12 ui-md-4 ui-lg-2">
+            <button pButton type="button" label="Eliminar" class="ui-button-raised ui-button-icon ui-button-danger"
+                icon="pi pi-trash" (click)="deleteProduct()"></button>
+        </div>
+    </div>
+</div>
+<p-confirmDialog [style]="{width: '50vw'}" position="top" acceptLabel="Si" rejectLabel="No"  class="fixed-top"></p-confirmDialog>
+
+<p-dialog [header]="titlePanel" [(visible)]="displayModal" [modal]="true"
+	[style]="{minWidth: '60%', minHeight: '150px', 'max-height': '90vh'}"
+	[contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '60vh','min-height':'250px'}"
+	[baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancel()">
+	<!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <label for="num_parte_prod">Número de Parte:</label>
+                <input pInputText type="text" [(ngModel)]="num_parte_prod" class="ng-dirty ng-invalid"/>
+            </div>
+            <div class="ui-grid-col-4">
+                <label for="cod_prod">Código interno:</label>
+                <input pInputText type="text" [(ngModel)]="cod_prod"/>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <p>Descripción *:</p>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-8">
+                <textarea rows="1" pInputTextarea [(ngModel)]="des_prod" autoResize="autoResize"></textarea>
+                <!-- <input pInputText type="text" [(ngModel)]="des_prod" placeholder="Requerido" /> -->
+            </div>
+            <div class="ui-grid-col-2">
+                <p-message severity="error" text="Campo requerido"
+                    *ngIf="submitted && !validDescripcion">
+                </p-message>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-3">
+                <label>Moneda:</label>
+                <p-dropdown
+                    [options]="monedas"
+                    [(ngModel)]="selectedMoneda"
+                    optionLabel="label"
+                    placeholder="Seleccione"
+                    showClear="true"
+                ></p-dropdown>
+            </div>
+            <div class="ui-grid-col-3">
+                <label for="pre_com_prod">Precio de Compra:</label>
+                <div class="ui-inputgroup">
+                    <span class="ui-inputgroup-addon" *ngIf="selectedMoneda"> {{ (selectedMoneda.value === 1) ? 'S/' : '$' }}</span>
+                    <input pInputText type="text" [(ngModel)]="pre_com_prod" placeholder="999.99" pattern="[0-9]{0,}.[0-9]{0,2}"/>
+                </div>
+                <p-message severity="warn" text="Entrada inválida"
+                    *ngIf="!validPreCom">
+                </p-message>
+            </div>
+            <div class="ui-grid-col-2">
+                <label for="stk_prod">Stock:</label>
+                <input pInputText type="text" [(ngModel)]="stk_prod" pattern="[0-9]{0,}.[0-9]{0,2}"/>
+                <p-message severity="warn" text="Entrada inválida"
+                    *ngIf="!validStock">
+                </p-message>
+            </div>
+            <div class="ui-grid-col-2"></div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <div class="ui-grid-row">
+                    <label for="id_mar">Marca:</label>
+                </div>
+                <div class="ui-grid-col-8">
+                    <p-dropdown
+                        [options]="marcas"
+                        [(ngModel)]="selectedMarca" 
+                        filter="true"
+                        optionLabel="des_mar"
+                        placeholder="Seleccione"
+                        showClear="true"
+                    ></p-dropdown>
+                </div>
+                <div class="ui-grid-col-4">
+                    <div><button pButton type="button" label="Nuevo" class="ui-button-raised ui-button-success" icon="pi pi-plus" (click)="newMarca()"></button></div>
+                </div>
+            </div>
+            <div class="ui-grid-col-4">
+                <div class="ui-grid-row">
+                    <label for="id_mod">Modelo:</label>
+                </div>
+                <div class="ui-grid-col-8">
+                    <p-dropdown
+                        [options]="modelos"
+                        [(ngModel)]="selectedModelo"
+                        filter="true"
+                        optionLabel="des_mod"
+                        placeholder="Seleccione"
+                        showClear="true"
+                    ></p-dropdown>
+                </div>
+                <div class="ui-grid-col-4">
+                    <div><button pButton type="button" label="Nuevo" class="ui-button-raised ui-button-success" icon="pi pi-plus" (click)="newModelo()"></button></div>
+                </div>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <div class="ui-grid-row">
+                    <label for="id_unimed">Unidad de Medida:</label>
+                </div>
+                <div class="ui-grid-col-8">
+                    <p-dropdown
+                        [options]="unimeds"
+                        [(ngModel)]="selectedUnimed"
+                        filter="true"
+                        optionLabel="nom_unimed"
+                        placeholder="Seleccione"
+                        showClear="true"
+                    ></p-dropdown>
+                </div>
+                <div class="ui-grid-col-4">
+                    <div><button pButton type="button" label="Nuevo" class="ui-button-raised ui-button-success" icon="pi pi-plus" (click)="newUniMed()"></button></div>
+                </div>
+            </div>
+            <div class="ui-grid-col-4">
+                <div class="ui-grid-row">
+                    <label for="id_fab">Fabricante:</label>
+                </div>
+                <div class="ui-grid-col-8">
+                    <p-dropdown
+                        [options]="fabricantes"
+                        [(ngModel)]="selectedFabricante"
+                        filter="true"
+                        optionLabel="des_fab"
+                        placeholder="Seleccione"
+                        showClear="true"
+                    ></p-dropdown>
+                </div>
+                <div class="ui-grid-col-4">
+                    <div><button pButton type="button" label="Nuevo" class="ui-button-raised ui-button-success" icon="pi pi-plus" (click)="newFabricante()"></button></div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <div class="ui-grid-row">
+                    <label>Moneda:</label>
+                </div>
+                <div class="ui-grid-col-12">
+                    <p-dropdown
+                        [options]="monedas"
+                        [(ngModel)]="selectedMoneda"
+                        optionLabel="label"
+                        placeholder="Seleccione"
+                        showClear="true"
+                    ></p-dropdown>
+                </div>
+            </div>
+        </div> -->
+        <br>
+    </div>
+	<!--End Body-->
+	<p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showbar"></p-progressBar>
+	<p-footer>
+		<button type="button" pButton icon="pi pi-save" (click)="submit()" [label]="submitLabel"
+			class="ui-button-primary"></button>
+		<button type="button" pButton icon="pi pi-times" (click)="cancel()" label="Cancelar"
+			class="ui-button-danger"></button>
+	</p-footer>
+</p-dialog>
+
+<p-dialog [header]="titlePanelMarca" [(visible)]="displayFormMarca" [modal]="true"
+	[contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '40vh','min-height':'100px'}"
+	[baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelMarca()">
+	<!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-1"></div>
+            <div class="ui-grid-col-10">
+                <label for="id_mar">Descripcion: *</label>
+                <input pInputText type="text" [(ngModel)]="des_mar" placeholder="Requerido" class="ng-dirty ng-invalid"/>
+                <p-message severity="error" text="Descripcion es requerido"
+                    *ngIf="submittedMarca && !validMarca">
+                </p-message>
+            </div>
+            <div class="ui-grid-col-1"></div>
+        </div>
+    </div>
+	<!--End Body-->
+	<p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showbar"></p-progressBar>
+	<p-footer>
+		
+		<button pButton type="submit" icon="pi pi-save" [label]="submitLabelMarca" (click)="submitMarca()"></button>
+		<button pButton class="ui-button-danger" icon="pi pi-times" label="Cancelar" (click)="cancelMarca()"></button>
+	</p-footer>
+</p-dialog>
+
+<p-dialog [header]="titlePanelModelo" [(visible)]="displayFormModelo" [modal]="true"
+	[contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '40vh','min-height':'100px'}"
+	[baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelModelo()">
+	<!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-1"></div>
+            <div class="ui-grid-col-10">
+                <label for="id_mar">Descripcion: *</label>
+                <input pInputText type="text" [(ngModel)]="des_mod" placeholder="Requerido" class="ng-dirty ng-invalid"/>
+                <p-message severity="error" text="Descripcion es requerido"
+                    *ngIf="submittedModelo && !validModelo">
+                </p-message>
+            </div>
+            <div class="ui-grid-col-1"></div>
+        </div>
+    </div>
+	<!--End Body-->
+	<p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showbar"></p-progressBar>
+	<p-footer>
+		
+		<button pButton type="submit" icon="pi pi-save" [label]="submitLabelModelo" (click)="submitModelo()"></button>
+		<button pButton class="ui-button-danger" icon="pi pi-times" label="Cancelar" (click)="cancelModelo()"></button>
+	</p-footer>
+</p-dialog>
+
+<p-dialog [header]="titlePanelUnimed" [(visible)]="displayFormUnimed" [modal]="true"
+	[contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '40vh','min-height':'100px'}"
+	[baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelUnimed()">
+	<!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-1"></div>
+            <div class="ui-grid-col-10">
+                <label>Nombre: *</label>
+                <input pInputText type="text" [(ngModel)]="nom_unimed" placeholder="Requerido" class="ng-dirty ng-invalid"/>
+                <p-message severity="error" text="Nombre es requerido"
+                    *ngIf="submittedUnimed && !validNomUnimed">
+                </p-message>
+            </div>
+            <div class="ui-grid-col-1"></div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-1"></div>
+            <div class="ui-grid-col-10">
+                <label>Descripcion: </label>
+                <input pInputText type="text" [(ngModel)]="des_unimed" placeholder="" class="ng-dirty ng-invalid"/>
+            </div>
+            <div class="ui-grid-col-1"></div>
+        </div>
+    </div>
+	<!--End Body-->
+	<p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showbar"></p-progressBar>
+	<p-footer>
+		<button pButton type="submit" icon="pi pi-save" [label]="submitLabelUnimed" (click)="submitUnimed()"></button>
+		<button pButton class="ui-button-danger" icon="pi pi-times" label="Cancelar" (click)="cancelUnimed()"></button>
+	</p-footer>
+</p-dialog>
+
+<p-dialog [header]="titlePanelFabricante" [(visible)]="displayFormFabricante" [modal]="true"
+	[contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '40vh','min-height':'100px'}"
+	[baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelFabricante()">
+	<!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-1"></div>
+            <div class="ui-grid-col-10">
+                <label for="id_mar">Descripcion: *</label>
+                <input pInputText type="text" [(ngModel)]="des_fab" placeholder="Requerido" class="ng-dirty ng-invalid"/>
+                <p-message severity="error" text="Descripcion es requerido"
+                    *ngIf="submittedFabricante && !validFabricante">
+                </p-message>
+            </div>
+            <div class="ui-grid-col-1"></div>
+        </div>
+    </div>
+	<!--End Body-->
+	<p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showbar"></p-progressBar>
+	<p-footer>
+		<button pButton type="submit" icon="pi pi-save" [label]="submitLabelFabricante" (click)="submitFabricante()"></button>
+		<button pButton class="ui-button-danger" icon="pi pi-times" label="Cancelar" (click)="cancelFabricante()"></button>
+	</p-footer>
+</p-dialog>

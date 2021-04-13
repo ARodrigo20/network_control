@@ -1,0 +1,242 @@
+<div class="card shadow">
+    <p-tabView>
+        <p-tabPanel header="Proyectos en proceso" leftIcon="pi pi-cog">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-12">
+                    <p-table #dt [value]="proyectosEnProceso" selectionMode="single" [(selection)]="selectedProyecto" styleClass="ui-table-customers"
+                    dataKey="id_proy" [loading]="loading" [totalRecords]="totalEnProceso" [rows]="rowsNumber" [paginator]="true"
+                    [responsive]="true" autoLayout="true" [globalFilterFields]="['nom_proy']">
+                        <ng-template pTemplate="caption">
+                            <div class="row justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-md-4">
+                                    <label class="mx-2">Proyectos en proceso - Total: {{ totalEnProceso }}</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-4">
+                                    
+                                </div>
+                                <div class="ui-g-12 ui-md-4"  style="text-align: right">
+                                    <input type="text" pInputText placeholder="Busqueda por nombre" (input)="dt.filterGlobal($event.target.value, 'contains')">
+                                </div>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th style="width:16em">Nombre de proyecto</th>
+                                <th style="width:16em">Número de proyecto</th>
+                                <th style="width:16em">Cliente</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-proyecto>
+                            <tr [pSelectableRow]="proyecto" _ngcontent-qmg-c2="">
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Nombre</span> {{ proyecto.nom_proy }}</td>
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Número</span> {{ proyecto.ser_proy + proyecto.num_proy }}</td>
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Cliente</span> {{ proyecto.cliente.razsoc_cli }}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <button pButton type="button" label="Crear" class="ui-button-raised ui-button-icon ui-button-success"
+                        icon="pi pi-plus" (click)="newProyect()">
+                    </button>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <button pButton type="button" label="Modificar" class="ui-button-raised ui-button-icon ui-button-warning"
+                        icon="pi pi-pencil" (click)="editProyect()"></button>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <button pButton type="button" label="Terminar" class="ui-button-raised ui-button-icon"
+                        icon="pi pi-check" (click)="endProyect()"></button>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <button pButton type="button" label="Eliminar" class="ui-button-raised ui-button-icon ui-button-danger"
+                        icon="pi pi-trash" (click)="deleteProyect()"></button>
+                </div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel header="Proyectos terminados" leftIcon="pi pi-check">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-12">
+                    <p-table #dtt [value]="proyectosTerminados" selectionMode="single" [(selection)]="selectedProyecto" styleClass="ui-table-customers"
+                    dataKey="id_proy" [loading]="loading" [totalRecords]="totalTerminados" [rows]="rowsNumber" [paginator]="true"
+                    [responsive]="true" autoLayout="true" [globalFilterFields]="['nom_proy']">
+                        <ng-template pTemplate="caption">
+                            <div class="row justify-content-center align-items-center">
+                                <div class="ui-g-12 ui-md-4">
+                                    <label class="mx-2">Proyectos terminados - Total: {{ totalTerminados }}</label>
+                                </div>
+                                <div class="ui-g-12 ui-md-4">
+                                    
+                                </div>
+                                <div class="ui-g-12 ui-md-4"  style="text-align: right">
+                                    <input type="text" pInputText placeholder="Busqueda por nombre o número" (input)="dtt.filterGlobal($event.target.value, 'contains')">
+                                </div>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th style="width:16em">Nombre de proyecto</th>
+                                <th style="width:16em">Número de proyecto</th>
+                                <th style="width:16em">Cliente</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-proyecto>
+                            <tr [pSelectableRow]="proyecto" _ngcontent-qmg-c2="">
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Nombre</span> {{ proyecto.nom_proy }}</td>
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Número</span> {{ proyecto.ser_proy + proyecto.num_proy }}</td>
+                                <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Cliente</span> {{ getCliente(proyecto.id_cli) }}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <button pButton type="button" label="Reactivar" class="ui-button-raised ui-button-icon"
+                        icon="pi pi-check" (click)="activeProyect()"></button>
+                </div>
+                <div class="ui-g-12 ui-md-4 ui-lg-2">
+                    <button pButton type="button" label="Eliminar" class="ui-button-raised ui-button-icon ui-button-danger"
+                        icon="pi pi-trash" (click)="deleteProyect()"></button>
+                </div>
+            </div>
+        </p-tabPanel>
+    </p-tabView>
+</div>
+
+<p-confirmDialog [style]="{width: '50vw'}" position="top" key="terminarProyecto" acceptLabel="Si" rejectLabel="No" baseZIndex="10001"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '50vw'}" position="top" key="activarProyecto" acceptLabel="Si" rejectLabel="No" baseZIndex="10001"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '50vw'}" position="top" key="deleteProyecto" acceptLabel="Si" rejectLabel="No" baseZIndex="10001"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '50vw'}" position="top" acceptLabel="Si" rejectLabel="No"  class="fixed-top"></p-confirmDialog>
+
+<p-dialog [header]="titlePanel" [(visible)]="displayModal" [modal]="true" [maximizable]="true"
+	[style]="{minWidth: '60%', minHeight: '150px', 'max-height': '90vh'}"
+	[contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '60vh','min-height':'250px'}"
+	[baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancel()">
+	<!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <p>Nombre: *</p>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-8">
+                <textarea rows="1" pInputTextarea [(ngModel)]="nom_proy" autoResize="autoResize"></textarea>
+                <!-- <input pInputText type="text" [(ngModel)]="nom_proy" placeholder="Requerido" /> -->
+            </div>
+            <div class="ui-grid-col-2">
+                <p-message severity="error" text="Campo requerido"
+                    *ngIf="submitted && !validNombreProy">
+                </p-message>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <p>Cliente: *</p>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-6">
+                <p-dropdown
+                    [options]="clientes"
+                    [(ngModel)]="selectedCliente" 
+                    filter="true"
+                    optionLabel="razsoc_cli"
+                    placeholder="Seleccione"
+                    showClear="true"
+                ></p-dropdown>
+            </div>
+            <div class="ui-grid-col-2">
+                <div><button pButton type="button" label="Nuevo" class="ui-button-raised ui-button-success" icon="pi pi-plus" (click)="newCliente()"></button></div>
+            </div>
+            <div class="ui-grid-col-2">
+                <p-message severity="error" text="Campo requerido"
+                    *ngIf="submitted && !validCliente">
+                </p-message>
+            </div>
+        </div>
+        <br>
+    </div>
+	<!--End Body-->
+	<p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showbar"></p-progressBar>
+	<p-footer>
+		<button type="button" pButton icon="pi pi-save" (click)="submit()" [label]="submitLabel"
+			class="ui-button-primary"></button>
+		<button type="button" pButton icon="pi pi-times" (click)="cancel()" label="Cancelar"
+			class="ui-button-danger"></button>
+	</p-footer>
+</p-dialog>
+
+<p-dialog [header]="titlePanelCliente" [(visible)]="displayFormCliente" [modal]="true"
+    [style]="{minWidth: '60%', minHeight: '150px', 'max-height': '90vh'}"
+	[contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '50vh','min-height':'250px'}"
+	[baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelCliente()">
+    <!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 0px 0px">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <p>Razón Social: *</p>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="razsoc_cli" placeholder="Requerido" class="ng-dirty ng-invalid"
+                pattern="[a-zA-Z0-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{2,200}"/>
+            </div>
+            <div class="ui-grid-col-2">
+                <p-message severity="error" text="Razón social es requerido"
+                    *ngIf="submittedCliente && !validRazSoc">
+                </p-message>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <label for="id_tipdoc">Tipo de Documento: *</label>
+                <p-dropdown
+                    [options]="tipdoc"
+                    [(ngModel)]="selectedTipdoc" 
+                    filter="true"
+                    optionLabel="des_tipdoc"
+                    placeholder="Seleccione"
+                    showClear="true"
+                ></p-dropdown>
+                <p-message severity="error" text="TipoDocumento es requerido"
+                    *ngIf="submittedCliente && !validTipDoc">
+                </p-message>
+            </div>
+            <div class="ui-grid-col-4">
+                <label for="numdoc_cli">Número de Documento: *</label>
+                <input pInputText type="text" pKeyFilter="int" [(ngModel)]="numdoc_cli" placeholder="Requerido" pattern="[0-9]{0,11}"/>
+                <p-message severity="error" text="Número de Documento es requerido"
+                    *ngIf="submittedCliente && !validNumDoc">
+                </p-message>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-4">
+                <p>Email:</p>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-8">
+                <input pInputText type="text" [(ngModel)]="ema_cli" placeholder="ejemplo@ejemplo.com"
+                pattern="[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]{2,69}@[A-Za-z0-9]{2,20}(?:\.[a-zA-Z0-9-.]{1,9})"/>
+            </div>
+        </div>
+    </div>
+	<!--End Body-->
+    <p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showbar"></p-progressBar>
+    
+	<p-footer>
+		<button pButton type="submit" icon="pi pi-save" [label]="submitLabelCliente" (click)="submitCliente()"></button>
+		<button pButton class="ui-button-danger" icon="pi pi-times" label="Cancelar" (click)="cancelCliente()"></button>
+	</p-footer>
+</p-dialog>

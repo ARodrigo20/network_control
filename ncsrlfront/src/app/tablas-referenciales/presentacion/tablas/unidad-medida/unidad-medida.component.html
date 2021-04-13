@@ -1,0 +1,86 @@
+<div class="card shadow">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-12">
+            <p-table #dt [value]="unimeds" selectionMode="single" [(selection)]="selectedUnimed"
+            dataKey="id_unimed" [loading]="loading" [totalRecords]="totalRegistrosUnimed" [rows]="10" [paginator]="true"
+            [responsive]="true" autoLayout="true" [globalFilterFields]="['id_unimed','des_unimed','nom_unimed']">
+                <ng-template pTemplate="caption">
+                    <div class="row justify-content-center align-items-center">
+                        <div class="ui-g-12 ui-md-4 text-left">
+                            <label class="mx-2"> Unidades de Medida - Total: {{totalRegistrosUnimed}}</label>
+                        </div>
+                        <div class="ui-g-12 ui-md-4">
+                            
+                        </div>
+                        <div class="ui-g-12 ui-md-4"  style="text-align: right">
+                            <input type="text" pInputText placeholder="Busqueda por id, descripcion o nombre" (input)="dt.filterGlobal($event.target.value, 'contains')">
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header" >
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre (Codigo SUNAT)</th>
+                        <th>Descripcion</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-unimed>
+                    <tr [pSelectableRow]="unimed">
+                        <td><strong> <span _ngcontent-qmg-c2="" class="ui-column-title">ID</span> {{ unimed.id_unimed }} </strong></td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Nombre</span> {{ unimed.nom_unimed }}</td>
+                        <td> <span _ngcontent-qmg-c2="" class="ui-column-title">Descripción</span> {{ unimed.des_unimed }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <div class="ui-g-12 ui-md-4 ui-lg-2">
+            <button pButton type="button" label="Crear" class="ui-button-raised ui-button-icon ui-button-success"
+                        icon="pi pi-plus" (click)="newUnimed()">
+                    </button>
+        </div>
+        <div class="ui-g-12 ui-md-4 ui-lg-2">
+            <button pButton type="button" label="Modificar" class="ui-button-raised ui-button-icon ui-button-warning"
+                        icon="pi pi-pencil" (click)="editUnimed()"></button>
+        </div>
+        <div class="ui-g-12 ui-md-4 ui-lg-2">
+            <button pButton type="button" label="Eliminar" class="ui-button-raised ui-button-icon ui-button-danger"
+                        icon="pi pi-trash" (click)="deleteUnimed()"></button>
+        </div>
+    </div>
+</div>
+
+<p-confirmDialog [style]="{width: '50vw'}" position="top" key="deleteUnimed" acceptLabel="Si" rejectLabel="No"  class="fixed-top"></p-confirmDialog>
+
+<p-dialog [header]="titlePanelUnimed" [(visible)]="displayFormUnimed" [modal]="true"
+	[style]="{minWidth: '40%', minHeight: '60px', 'max-height': '60vh'}"
+	[contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 'max-height': '40vh','min-height':'100px'}"
+	[baseZIndex]="1000" [draggable]="false" [resizable]="true" (onHide)="cancelUnimed()">
+	<!--Body-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-1"></div>
+            <div class="ui-grid-col-10">
+                <label>Nombre (Codigo SUNAT): *</label>
+                <input pInputText type="text" [(ngModel)]="nom_unimed" placeholder="Requerido" class="ng-dirty ng-invalid"/>
+                <p-message severity="error" text="Nombre es requerido"
+                    *ngIf="submittedUnimed && !validNomUnimed">
+                </p-message>
+            </div>
+            <div class="ui-grid-col-1"></div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-1"></div>
+            <div class="ui-grid-col-10">
+                <label>Descripcion: </label>
+                <input pInputText type="text" [(ngModel)]="des_unimed" placeholder="" class="ng-dirty ng-invalid"/>
+            </div>
+            <div class="ui-grid-col-1"></div>
+        </div>
+    </div>
+	<!--End Body-->
+	<p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="showbar"></p-progressBar>
+	<p-footer>
+		<button pButton type="submit" icon="pi pi-save" [label]="submitLabelUnimed" (click)="submitUnimed()"></button>
+		<button pButton class="ui-button-danger" icon="pi pi-times" label="Cancelar" (click)="cancelUnimed()"></button>
+	</p-footer>
+</p-dialog>
